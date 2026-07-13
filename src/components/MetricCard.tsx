@@ -34,22 +34,33 @@ export function MetricCard({
           ? "text-error"
           : "text-foreground";
   return (
-    <div className="panel flex flex-col gap-2 p-3.5">
+    <div className="panel flex min-w-0 flex-col gap-2 p-3.5">
       <div className="flex items-start justify-between gap-2">
-        <div className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+        <div className="min-w-0 truncate text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
           {label}
         </div>
-        {hint ? <div className="mono text-[10px] text-muted-foreground">{hint}</div> : null}
+        {hint ? (
+          <div className="mono shrink-0 text-[10px] text-muted-foreground">{hint}</div>
+        ) : null}
       </div>
       <div className="flex items-end justify-between gap-3">
-        <div>
-          <div className={cn("mono text-[24px] font-semibold leading-none", toneColor)}>
+        <div className="min-w-0 flex-1">
+          <div
+            className={cn(
+              "mono truncate text-[22px] font-semibold leading-none",
+              toneColor,
+            )}
+          >
             {loading ? <span className="text-muted-foreground">—</span> : value}
           </div>
-          {sub ? <div className="mono mt-1.5 text-[11px] text-muted-foreground">{sub}</div> : null}
+          {sub ? (
+            <div className="mono mt-1.5 truncate text-[11px] text-muted-foreground">
+              {sub}
+            </div>
+          ) : null}
         </div>
         {spark && spark.length ? (
-          <div className="h-9 w-24 shrink-0">
+          <div className="hidden h-9 w-16 shrink-0 2xl:block">
             <ResponsiveContainer>
               <LineChart data={spark.map((v, i) => ({ i, v }))}>
                 <Line
