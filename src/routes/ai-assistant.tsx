@@ -34,7 +34,7 @@ function AIAssistantPage() {
           <div className="hairline-r flex min-h-0 min-w-0 flex-col">
             <AIChatWindow />
           </div>
-          <div className="hairline-t hidden min-h-0 xl:block xl:hairline-t-0">
+          <div className="hidden min-h-0 xl:block">
             <ForecastContextPanel />
           </div>
         </div>
