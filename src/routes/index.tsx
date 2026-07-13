@@ -37,7 +37,7 @@ function SectionHead({
   right?: React.ReactNode;
 }) {
   return (
-    <div className="mb-5 flex items-end justify-between gap-4">
+    <div className="mb-4 flex items-end justify-between gap-4">
       <div>
         <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           {eyebrow}
@@ -55,39 +55,33 @@ function DashboardPage() {
   const { forecast, refresh } = useForecast();
 
   return (
-    <div className="w-full">
-      {/* Slim page header — no card, hairline only */}
-      <div className="hairline-b">
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3 px-4 py-4 md:px-6">
-          <div className="min-w-0">
-            <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              ForecastIQ · Workstation
-            </div>
-            <h1 className="mt-1 text-[18px] font-semibold tracking-tight">
-              Forecast Dashboard
-            </h1>
+    <div className="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6">
+      {/* Page header */}
+      <header className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+        <div className="min-w-0">
+          <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            ForecastIQ · Workstation
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={refresh}
-              className="mono flex items-center gap-1.5 border border-[color:var(--border)] px-3 py-1.5 text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40"
-            >
-              <RefreshCw className="h-3 w-3" /> Re-run model
-            </button>
-            <button className="mono flex items-center gap-1.5 bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">
-              <Download className="h-3 w-3" /> Export report
-            </button>
-          </div>
+          <h1 className="mt-1 truncate text-[18px] font-semibold tracking-tight">
+            Forecast Dashboard
+          </h1>
         </div>
-      </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            onClick={refresh}
+            className="mono flex items-center gap-1.5 border border-[color:var(--border)] px-3 py-1.5 text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40"
+          >
+            <RefreshCw className="h-3 w-3" /> Re-run model
+          </button>
+          <button className="mono flex items-center gap-1.5 bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">
+            <Download className="h-3 w-3" /> Export report
+          </button>
+        </div>
+      </header>
 
-      {/* HERO — the forecast is the product */}
-      <div className="mx-auto max-w-[1600px] px-4 md:px-6">
-        <ForecastHero />
-      </div>
-
-      {/* Compact KPI strip — inline, no cards */}
-      <div className="mx-auto max-w-[1600px] px-4 md:px-6">
+      {/* Rows separated by consistent 24px rhythm */}
+      <div className="space-y-6">
+        {/* KPI strip — one baseline, equal cells */}
         <MetricStrip
           stats={[
             {
@@ -130,23 +124,30 @@ function DashboardPage() {
             },
           ]}
         />
-      </div>
 
-      {/* Console + Analyst report — asymmetric split, no cards */}
-      <div className="mx-auto max-w-[1600px] px-4 pt-10 md:px-6 md:pt-14">
-        <div className="grid gap-12 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-          <BudgetConsole />
-          <AnalystReport />
+        {/* Hero row — 12-col grid, chart 8 / budget 4, equal heights */}
+        <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <ForecastHero />
+          </div>
+          <div className="lg:col-span-4">
+            <BudgetConsole />
+          </div>
         </div>
-      </div>
 
-      {/* Channel table — borderless, professional analytics */}
-      <div className="mx-auto max-w-[1600px] px-4 pt-10 md:px-6 md:pt-14 pb-10">
-        <SectionHead
-          eyebrow="Channel intelligence"
-          title="Performance by channel"
-        />
-        <ChannelPerformanceTable />
+        {/* AI analyst report */}
+        <AnalystReport />
+
+        {/* Channel table */}
+        <section>
+          <SectionHead
+            eyebrow="Channel intelligence"
+            title="Performance by channel"
+          />
+          <div className="border border-[color:var(--border)] bg-panel">
+            <ChannelPerformanceTable />
+          </div>
+        </section>
       </div>
     </div>
   );

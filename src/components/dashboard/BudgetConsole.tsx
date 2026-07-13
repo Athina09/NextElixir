@@ -1,6 +1,9 @@
+import { Sparkles } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useForecast } from "@/lib/forecast-context";
 import type { Horizon } from "@/lib/forecast";
 import { formatINR } from "@/lib/format";
+
 
 const MAX = 5_000_000;
 
@@ -29,9 +32,10 @@ export function BudgetConsole() {
   const revenueP50 = forecast?.revenue.p50 ?? 0;
 
   return (
-    <section>
+    <section className="flex h-full min-h-[560px] flex-col border border-[color:var(--border)] bg-panel p-6 lg:h-[620px]">
       {/* Header */}
-      <div className="hairline-b flex items-end justify-between pb-3">
+      <div className="hairline-b flex items-end justify-between gap-3 pb-3">
+
         <div>
           <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             Budget Console
@@ -73,46 +77,23 @@ export function BudgetConsole() {
         </div>
       ) : null}
 
-      {/* Rows */}
-      <div className="mt-5 space-y-7">
+      {/* Rows — evenly distributed, fill remaining height */}
+      <div className="mt-5 flex min-h-0 flex-1 flex-col justify-between gap-6">
         {ROWS.map((row) => {
           const value = state.budget[row.key];
           const pct = total > 0 ? (value / total) * 100 : 0;
           const projected = revenueP50 * (total > 0 ? value / total : 0);
           return (
-            <div key={row.key}>
+            <div key={row.key} className="min-w-0">
               <div className="flex items-baseline justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-[13px] font-medium">{row.label}</div>
-                  <div className="text-[10.5px] text-muted-foreground">
-                    {row.hint}
+                  <div className="truncate text-[13px] font-medium">{row.label}</div>
+                  <div className="mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {pct.toFixed(0)}% allocation
                   </div>
                 </div>
-                <div className="flex items-baseline gap-6 text-right">
-                  <div>
-                    <div className="mono text-[9.5px] uppercase tracking-widest text-muted-foreground">
-                      Allocation
-                    </div>
-                    <div className="mono text-[13px] text-foreground">
-                      {pct.toFixed(0)}%
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mono text-[9.5px] uppercase tracking-widest text-muted-foreground">
-                      Spend
-                    </div>
-                    <div className="mono text-[17px] font-semibold text-foreground">
-                      {formatINR(value)}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mono text-[9.5px] uppercase tracking-widest text-muted-foreground">
-                      Exp. revenue
-                    </div>
-                    <div className="mono text-[13px] text-primary">
-                      {formatINR(projected)}
-                    </div>
-                  </div>
+                <div className="mono shrink-0 text-right text-[17px] font-semibold text-foreground">
+                  {formatINR(value)}
                 </div>
               </div>
               <div className="mt-3">
@@ -132,15 +113,26 @@ export function BudgetConsole() {
                   }
                   className="range-forecast h-[3px] w-full cursor-pointer appearance-none rounded-full bg-[color:var(--panel-2)] accent-primary"
                 />
-                <div className="mono mt-1.5 flex justify-between text-[9.5px] text-muted-foreground">
-                  <span>{formatINR(0)}</span>
-                  <span>{formatINR(MAX, { decimals: 0 })}</span>
+                <div className="mono mt-1.5 flex items-baseline justify-between gap-3 text-[9.5px] text-muted-foreground">
+                  <span>{row.hint}</span>
+                  <span className="text-primary">
+                    exp. {formatINR(projected)}
+                  </span>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Ask AI — pinned bottom */}
+      <Link
+        to="/ai-assistant"
+        className="mono mt-6 flex items-center justify-center gap-2 border border-primary/40 bg-primary/10 py-2.5 text-[11px] font-medium uppercase tracking-widest text-primary hover:bg-primary/20"
+      >
+        <Sparkles className="h-3 w-3" /> Ask AI to optimize
+      </Link>
     </section>
   );
 }
+

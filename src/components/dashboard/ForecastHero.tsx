@@ -67,8 +67,8 @@ export function ForecastHero() {
   const confidence = forecast?.confidence ?? 0;
 
   return (
-    <section className="hairline-b -mx-4 md:-mx-6">
-      <div className="mx-auto max-w-[1600px] px-4 pb-8 pt-6 md:px-6 md:pb-10 md:pt-8">
+    <section className="flex h-full min-h-[560px] flex-col border border-[color:var(--border)] bg-panel lg:h-[620px]">
+      <div className="flex h-full min-h-0 flex-col p-6">
         {/* Header row */}
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
@@ -80,7 +80,7 @@ export function ForecastHero() {
               className={`mono mt-3 font-medium leading-none tracking-tight ${
                 loading && !forecast ? "text-muted-foreground" : "text-foreground"
               }`}
-              style={{ fontSize: "clamp(40px, 6vw, 60px)" }}
+              style={{ fontSize: "clamp(32px, 4.2vw, 52px)" }}
             >
               {forecast ? formatINR(p50) : "—"}
             </div>
@@ -151,8 +151,9 @@ export function ForecastHero() {
           </button>
         </div>
 
-        {/* The chart — hero-sized, borderless */}
-        <div className="mt-4 h-[440px] w-full md:h-[520px]">
+        {/* The chart — fills remaining panel space */}
+        <div className="mt-4 min-h-0 w-full flex-1">
+
           {loading && !forecast ? (
             <div className="h-full w-full animate-pulse rounded-sm bg-panel/40" />
           ) : (
