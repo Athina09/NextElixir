@@ -3,7 +3,7 @@
 //   **bold**, *italic*, `inline code`
 // Deliberately minimal to keep visual consistency with the terminal UI.
 
-import { Fragment } from "react";
+import { Fragment, type ReactElement } from "react";
 
 function inline(text: string): (string | React.ReactElement)[] {
   const parts: (string | React.ReactElement)[] = [];
