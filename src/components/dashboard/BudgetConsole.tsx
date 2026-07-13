@@ -32,9 +32,10 @@ export function BudgetConsole() {
   const revenueP50 = forecast?.revenue.p50 ?? 0;
 
   return (
-    <section>
+    <section className="flex h-full min-h-[560px] flex-col border border-[color:var(--border)] bg-panel p-6 lg:h-[620px]">
       {/* Header */}
-      <div className="hairline-b flex items-end justify-between pb-3">
+      <div className="hairline-b flex items-end justify-between gap-3 pb-3">
+
         <div>
           <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
             Budget Console
