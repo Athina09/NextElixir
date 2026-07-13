@@ -1,11 +1,19 @@
-import { Bell, Search, ChevronDown, Database } from "lucide-react";
+import { Bell, Search, ChevronDown, Database, Menu } from "lucide-react";
 import { useForecast } from "@/lib/forecast-context";
 
-export function Topbar() {
+export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const { forecast, runAt } = useForecast();
   const runTime = runAt ? new Date(runAt).toLocaleTimeString("en-IN", { hour12: false }) : "—";
   return (
     <header className="hairline-b sticky top-0 z-30 flex h-14 items-center gap-3 bg-background/90 px-4 backdrop-blur">
+      <button
+        type="button"
+        onClick={onToggleSidebar}
+        aria-label="Toggle sidebar"
+        className="hairline-b flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-panel-2/60 text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+      >
+        <Menu className="h-4 w-4" strokeWidth={2} />
+      </button>
       <div className="flex flex-1 items-center gap-2">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
