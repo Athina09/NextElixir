@@ -1,6 +1,9 @@
+import { Sparkles } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useForecast } from "@/lib/forecast-context";
 import type { Horizon } from "@/lib/forecast";
 import { formatINR } from "@/lib/format";
+
 
 const MAX = 5_000_000;
 
