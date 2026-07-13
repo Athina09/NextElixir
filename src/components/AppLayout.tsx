@@ -1,12 +1,13 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { DataStatusBar } from "./DataStatusBar";
 
 export function AppLayout({ children }: { children: ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <div className="flex min-h-dvh bg-background text-foreground">
-      <Sidebar />
+      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
         <DataStatusBar />
