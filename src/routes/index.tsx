@@ -44,7 +44,7 @@ function DashboardPage() {
         </>
       }
     >
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-7">
         <MetricCard
           label="Forecast revenue"
           value={forecast ? formatINR(forecast.revenue.p50) : "—"}
