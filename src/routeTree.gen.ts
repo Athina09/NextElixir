@@ -17,6 +17,7 @@ import { Route as ForecastsRouteImport } from './routes/forecasts'
 import { Route as ForecastHistoryRouteImport } from './routes/forecast-history'
 import { Route as CampaignAnalyticsRouteImport } from './routes/campaign-analytics'
 import { Route as BudgetSimulatorRouteImport } from './routes/budget-simulator'
+import { Route as AiAssistantRouteImport } from './routes/ai-assistant'
 import { Route as IndexRouteImport } from './routes/index'
 
 const UploadRoute = UploadRouteImport.update({
@@ -59,6 +60,11 @@ const BudgetSimulatorRoute = BudgetSimulatorRouteImport.update({
   path: '/budget-simulator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AiAssistantRoute = AiAssistantRouteImport.update({
+  id: '/ai-assistant',
+  path: '/ai-assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,6 +73,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-assistant': typeof AiAssistantRoute
   '/budget-simulator': typeof BudgetSimulatorRoute
   '/campaign-analytics': typeof CampaignAnalyticsRoute
   '/forecast-history': typeof ForecastHistoryRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-assistant': typeof AiAssistantRoute
   '/budget-simulator': typeof BudgetSimulatorRoute
   '/campaign-analytics': typeof CampaignAnalyticsRoute
   '/forecast-history': typeof ForecastHistoryRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-assistant': typeof AiAssistantRoute
   '/budget-simulator': typeof BudgetSimulatorRoute
   '/campaign-analytics': typeof CampaignAnalyticsRoute
   '/forecast-history': typeof ForecastHistoryRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ai-assistant'
     | '/budget-simulator'
     | '/campaign-analytics'
     | '/forecast-history'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-assistant'
     | '/budget-simulator'
     | '/campaign-analytics'
     | '/forecast-history'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ai-assistant'
     | '/budget-simulator'
     | '/campaign-analytics'
     | '/forecast-history'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiAssistantRoute: typeof AiAssistantRoute
   BudgetSimulatorRoute: typeof BudgetSimulatorRoute
   CampaignAnalyticsRoute: typeof CampaignAnalyticsRoute
   ForecastHistoryRoute: typeof ForecastHistoryRoute
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BudgetSimulatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ai-assistant': {
+      id: '/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/ai-assistant'
+      preLoaderRoute: typeof AiAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -217,6 +237,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiAssistantRoute: AiAssistantRoute,
   BudgetSimulatorRoute: BudgetSimulatorRoute,
   CampaignAnalyticsRoute: CampaignAnalyticsRoute,
   ForecastHistoryRoute: ForecastHistoryRoute,

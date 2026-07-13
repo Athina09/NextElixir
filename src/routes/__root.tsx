@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "@/components/AppLayout";
 import { ForecastProvider } from "@/lib/forecast-context";
+import { ChatProvider } from "@/lib/chat-context";
+import { FloatingAIButton } from "@/components/chat/FloatingAIButton";
 
 function NotFoundComponent() {
   return (
@@ -134,9 +136,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ForecastProvider>
-        <AppLayout>
-          <Outlet />
-        </AppLayout>
+        <ChatProvider>
+          <AppLayout>
+            <Outlet />
+          </AppLayout>
+          <FloatingAIButton />
+        </ChatProvider>
       </ForecastProvider>
     </QueryClientProvider>
   );

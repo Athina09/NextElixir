@@ -13,12 +13,14 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   X,
+  Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/forecasts", label: "Forecasts", icon: TrendingUp },
+  { to: "/ai-assistant", label: "AI Assistant", icon: Bot },
   { to: "/campaign-analytics", label: "Campaign Analytics", icon: Target },
   { to: "/budget-simulator", label: "Budget Simulator", icon: Sliders },
   { to: "/scenario-comparison", label: "Scenario Comparison", icon: GitCompareArrows },
