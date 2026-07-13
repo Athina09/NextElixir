@@ -151,8 +151,9 @@ export function ForecastHero() {
           </button>
         </div>
 
-        {/* The chart — hero-sized, borderless */}
-        <div className="mt-4 h-[440px] w-full md:h-[520px]">
+        {/* The chart — fills remaining panel space */}
+        <div className="mt-4 min-h-0 w-full flex-1">
+
           {loading && !forecast ? (
             <div className="h-full w-full animate-pulse rounded-sm bg-panel/40" />
           ) : (
