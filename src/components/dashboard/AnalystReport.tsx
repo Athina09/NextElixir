@@ -28,7 +28,8 @@ function Block({
 export function AnalystReport() {
   const { insights, insightsLoading } = useForecast();
   return (
-    <section className="border-l-2 border-primary/70 pl-5">
+    <section className="border border-[color:var(--border)] border-l-2 border-l-primary/70 bg-panel p-6">
+
       <div className="hairline-b flex items-center justify-between pb-3">
         <div>
           <div className="mono flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
