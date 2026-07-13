@@ -5,11 +5,24 @@ import { DataStatusBar } from "./DataStatusBar";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const toggle = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setMobileOpen((v) => !v);
+    } else {
+      setCollapsed((v) => !v);
+    }
+  };
   return (
     <div className="flex min-h-dvh bg-background text-foreground">
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} />
+      <Sidebar
+        collapsed={collapsed}
+        mobileOpen={mobileOpen}
+        onToggle={toggle}
+        onCloseMobile={() => setMobileOpen(false)}
+      />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar />
+        <Topbar onToggleSidebar={toggle} />
         <DataStatusBar />
         <main className="min-w-0 flex-1">{children}</main>
       </div>
