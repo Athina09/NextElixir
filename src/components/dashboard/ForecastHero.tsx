@@ -80,7 +80,7 @@ export function ForecastHero() {
               className={`mono mt-3 font-medium leading-none tracking-tight ${
                 loading && !forecast ? "text-muted-foreground" : "text-foreground"
               }`}
-              style={{ fontSize: "clamp(40px, 6vw, 60px)" }}
+              style={{ fontSize: "clamp(32px, 4.2vw, 52px)" }}
             >
               {forecast ? formatINR(p50) : "—"}
             </div>
