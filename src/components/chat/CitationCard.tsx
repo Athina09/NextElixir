@@ -4,7 +4,7 @@ import type { ChatCitation } from "@/services/chatService";
 export function CitationCard({ citations }: { citations: ChatCitation[] }) {
   if (!citations?.length) return null;
   return (
-    <div className="mt-2 rounded-sm border border-border bg-panel-2/40 p-2.5">
+    <div className="panel mt-2 p-2.5">
       <div className="mono mb-1.5 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         <BookOpen className="h-3 w-3" /> Sources
       </div>

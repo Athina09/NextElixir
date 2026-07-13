@@ -73,7 +73,7 @@ function ForecastHistoryPage() {
                   <span
                     className={`mono rounded-sm px-1.5 py-0.5 text-[10px] uppercase tracking-widest ${
                       r.status === "completed"
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-success/10 text-success"
                         : r.status === "draft"
                           ? "bg-warning/10 text-warning"
                           : "bg-error/10 text-error"

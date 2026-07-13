@@ -42,17 +42,17 @@ export function PageContainer({
   children: ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[1600px] px-4 py-5 md:px-6">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+          <div className="text-[10px] font-medium uppercase tracking-[0.16em] text-gradient-primary">
             ForecastIQ
           </div>
-          <h1 className="mt-0.5 text-[22px] font-semibold tracking-tight text-foreground">
+          <h1 className="mt-1 text-[24px] font-semibold tracking-tight text-foreground">
             {title}
           </h1>
           {description ? (
-            <p className="mt-1 max-w-2xl text-[12.5px] text-muted-foreground">{description}</p>
+            <p className="mt-1.5 max-w-2xl text-[13px] text-muted-foreground">{description}</p>
           ) : null}
         </div>
         {actions ? <div className="flex items-center gap-2">{actions}</div> : null}

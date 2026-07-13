@@ -7,7 +7,7 @@ interface Props {
 
 export function ForecastReasoningCard({ title, drivers }: Props) {
   return (
-    <div className="mt-2 rounded-sm border border-border bg-panel-2/40 p-3">
+    <div className="panel mt-2 p-3">
       <div className="mono mb-2 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         <Brain className="h-3 w-3 text-primary" /> {title}
       </div>

@@ -2,7 +2,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useForecast } from "@/lib/forecast-context";
 import { formatINR, formatPct } from "@/lib/format";
 
-const COLORS = ["#3FA796", "#6EA8FE", "#D4A24C"];
+const COLORS = ["#3B82F6", "#22D3EE", "#F2B84B"];
 
 export function BudgetAllocationPie() {
   const { forecast, state } = useForecast();
@@ -37,7 +37,7 @@ export function BudgetAllocationPie() {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ background: "#181A21", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11 }}
+                contentStyle={{ background: "#121826", border: "1px solid rgba(148,171,209,0.15)", borderRadius: 8, fontSize: 11 }}
                 formatter={(v: number) => formatINR(v)}
               />
             </PieChart>

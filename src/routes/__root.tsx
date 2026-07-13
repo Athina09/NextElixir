@@ -30,7 +30,7 @@ function NotFoundComponent() {
         </p>
         <Link
           to="/"
-          className="mono mt-5 inline-flex items-center rounded-sm bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground hover:bg-primary/90"
+          className="mono mt-5 inline-flex items-center rounded-md gradient-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
         >
           → Return to dashboard
         </Link>
@@ -62,7 +62,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="mono rounded-sm bg-primary px-3 py-1.5 text-[12px] text-primary-foreground hover:bg-primary/90"
+            className="mono rounded-md gradient-primary px-3 py-1.5 text-[12px] text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
           >
             → Retry
           </button>

@@ -101,8 +101,8 @@ export function ForecastChart() {
               <ComposedChart data={bandData} margin={{ top: 10, right: 24, left: 8, bottom: 8 }}>
                 <defs>
                   <linearGradient id="bandFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3FA796" stopOpacity={0.22} />
-                    <stop offset="100%" stopColor="#3FA796" stopOpacity={0.04} />
+                    <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.22} />
+                    <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.04} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke={GRID} vertical={false} />
@@ -136,7 +136,7 @@ export function ForecastChart() {
                 <Line
                   type="monotone"
                   dataKey="p50"
-                  stroke="#3FA796"
+                  stroke="#3B82F6"
                   strokeWidth={1.8}
                   dot={false}
                   isAnimationActive
@@ -145,7 +145,7 @@ export function ForecastChart() {
                 <Line
                   type="monotone"
                   dataKey="p10"
-                  stroke="#3FA796"
+                  stroke="#3B82F6"
                   strokeOpacity={0.35}
                   strokeWidth={1}
                   strokeDasharray="3 3"
@@ -154,7 +154,7 @@ export function ForecastChart() {
                 <Line
                   type="monotone"
                   dataKey="p90"
-                  stroke="#3FA796"
+                  stroke="#3B82F6"
                   strokeOpacity={0.35}
                   strokeWidth={1}
                   strokeDasharray="3 3"

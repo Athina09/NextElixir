@@ -15,13 +15,13 @@ export function ForecastDistributionChart() {
         </div>
         <div className="mt-0.5 text-[13px] font-medium">Probability density · 90D outlook</div>
       </div>
-      <div className="h-[220px] flex-1 p-2">
+      <div className="h-[220px] w-full p-2">
         <ResponsiveContainer>
           <AreaChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 6 }}>
             <defs>
               <linearGradient id="distFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3FA796" stopOpacity={0.5} />
-                <stop offset="100%" stopColor="#3FA796" stopOpacity={0.02} />
+                <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <XAxis
@@ -35,14 +35,14 @@ export function ForecastDistributionChart() {
             />
             <YAxis hide />
             <Tooltip
-              contentStyle={{ background: "#181A21", border: "1px solid rgba(255,255,255,0.08)", fontSize: 11 }}
+              contentStyle={{ background: "#121826", border: "1px solid rgba(148,171,209,0.15)", borderRadius: 8, fontSize: 11 }}
               formatter={(v: number) => v.toFixed(3)}
               labelFormatter={(v) => `Rev ${formatINR(v as number)}`}
             />
             <Area
               type="monotone"
               dataKey="density"
-              stroke="#3FA796"
+              stroke="#3B82F6"
               strokeWidth={1.5}
               fill="url(#distFill)"
               isAnimationActive
@@ -50,9 +50,9 @@ export function ForecastDistributionChart() {
             />
             <ReferenceLine
               x={mean}
-              stroke="#D4A24C"
+              stroke="#F2B84B"
               strokeDasharray="2 2"
-              label={{ value: "μ P50", fill: "#D4A24C", fontSize: 10, position: "top" }}
+              label={{ value: "μ P50", fill: "#F2B84B", fontSize: 10, position: "top" }}
             />
           </AreaChart>
         </ResponsiveContainer>

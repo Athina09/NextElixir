@@ -28,7 +28,8 @@ function Block({
 export function AnalystReport() {
   const { insights, insightsLoading } = useForecast();
   return (
-    <section className="border border-[color:var(--border)] border-l-2 border-l-primary/70 bg-panel p-6">
+    <section className="panel-elevated relative overflow-hidden p-6">
+      <div className="absolute inset-y-0 left-0 w-[3px] gradient-primary" />
 
       <div className="hairline-b flex items-center justify-between pb-3">
         <div>
@@ -42,7 +43,7 @@ export function AnalystReport() {
         </div>
         <div
           className={`mono flex items-center gap-1.5 text-[10px] uppercase tracking-widest ${
-            insightsLoading ? "text-warning" : "text-primary"
+            insightsLoading ? "text-warning" : "text-success"
           }`}
         >
           <Sparkles className="h-3 w-3" />
@@ -71,7 +72,7 @@ export function AnalystReport() {
                 <ul className="space-y-1.5">
                   {insights.positives.map((p) => (
                     <li key={p} className="flex gap-2">
-                      <span className="text-primary">+</span>
+                      <span className="text-success">+</span>
                       <span>{p}</span>
                     </li>
                   ))}

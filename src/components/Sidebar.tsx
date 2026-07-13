@@ -50,13 +50,16 @@ function NavList({
               onClick={onNavigate}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "group flex items-center gap-2.5 rounded-sm py-1.5 text-[13px] transition-colors",
-                collapsed ? "justify-center px-0" : "px-2.5",
+                "group relative flex items-center gap-2.5 rounded-md py-1.5 text-[13px] transition-colors",
+                collapsed ? "justify-center px-0" : active ? "pl-3.5 pr-2.5" : "px-2.5",
                 active
-                  ? "bg-panel-2 text-foreground"
-                  : "text-muted-foreground hover:bg-panel-2 hover:text-foreground",
+                  ? "bg-panel-2 text-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-panel-2/60 hover:text-foreground",
               )}
             >
+              {active && !collapsed && (
+                <span className="absolute left-0 top-1/2 h-4 w-[3px] -translate-y-1/2 rounded-full gradient-primary" />
+              )}
               <item.icon
                 className={cn(
                   "h-3.5 w-3.5 shrink-0",
@@ -99,7 +102,7 @@ export function Sidebar({
             collapsed && "justify-center px-2",
           )}
         >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground">
+          <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-md gradient-primary text-primary-foreground glow-primary">
             <Sparkles className="h-4 w-4" strokeWidth={2.25} />
           </div>
           {!collapsed && (
@@ -114,7 +117,7 @@ export function Sidebar({
                 type="button"
                 onClick={onToggle}
                 aria-label="Collapse sidebar"
-                className="flex h-7 w-7 items-center justify-center rounded-sm text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-panel-2 hover:text-foreground"
               >
                 <PanelLeftClose className="h-3.5 w-3.5" strokeWidth={2} />
               </button>
@@ -127,7 +130,7 @@ export function Sidebar({
               type="button"
               onClick={onToggle}
               aria-label="Expand sidebar"
-              className="flex h-7 w-7 items-center justify-center rounded-sm text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-panel-2 hover:text-foreground"
             >
               <PanelLeftOpen className="h-3.5 w-3.5" strokeWidth={2} />
             </button>
@@ -143,8 +146,8 @@ export function Sidebar({
         </nav>
         {!collapsed && (
           <div className="hairline-t p-3">
-            <div className="rounded-sm bg-panel-2 p-2.5 text-[11px] text-muted-foreground">
-              <div className="mono text-[10px] uppercase tracking-widest text-primary">
+            <div className="rounded-lg border border-border bg-panel-2 p-2.5 text-[11px] text-muted-foreground">
+              <div className="mono text-[10px] uppercase tracking-widest text-gradient-primary">
                 Model v4.2.1
               </div>
               <div className="mt-0.5 leading-snug">
@@ -172,12 +175,12 @@ export function Sidebar({
         />
         <aside
           className={cn(
-            "hairline-r absolute inset-y-0 left-0 flex w-[260px] flex-col bg-panel transition-transform duration-200",
+            "hairline-r absolute inset-y-0 left-0 flex w-[260px] flex-col bg-panel shadow-lg transition-transform duration-200",
             mobileOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
           <div className="hairline-b flex h-14 items-center gap-2 px-3">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-primary text-primary-foreground">
+            <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-md gradient-primary text-primary-foreground glow-primary">
               <Sparkles className="h-4 w-4" strokeWidth={2.25} />
             </div>
             <div className="min-w-0 flex-1 leading-tight">
@@ -190,7 +193,7 @@ export function Sidebar({
               type="button"
               onClick={onCloseMobile}
               aria-label="Close sidebar"
-              className="flex h-7 w-7 items-center justify-center rounded-sm text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-panel-2 hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" strokeWidth={2} />
             </button>

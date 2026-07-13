@@ -26,7 +26,7 @@ export function BudgetRecommendationCard({ rows }: { rows: Row[] }) {
                 <div
                   className={cn(
                     "mono flex items-center gap-1 text-[11px]",
-                    up ? "text-primary" : "text-error",
+                    up ? "text-success" : "text-error",
                   )}
                 >
                   {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}

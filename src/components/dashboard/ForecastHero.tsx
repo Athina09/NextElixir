@@ -67,13 +67,13 @@ export function ForecastHero() {
   const confidence = forecast?.confidence ?? 0;
 
   return (
-    <section className="flex h-full min-h-[560px] flex-col border border-[color:var(--border)] bg-panel lg:h-[620px]">
+    <section className="panel-elevated flex h-full min-h-[560px] flex-col lg:h-[620px]">
       <div className="flex h-full min-h-0 flex-col p-6">
         {/* Header row */}
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
             <div className="mono flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="inline-block h-1.5 w-1.5 rounded-full gradient-primary animate-pulse" />
               Revenue Forecast · {forecast?.horizon ?? 0}-day horizon
             </div>
             <div
@@ -90,7 +90,7 @@ export function ForecastHero() {
           </div>
 
           {/* Horizontal stat row */}
-          <div className="flex items-stretch gap-0 divide-x divide-[color:var(--border)] border-l border-r border-[color:var(--border)]">
+          <div className="flex items-stretch gap-0 divide-x divide-[color:var(--border)] rounded-lg border border-[color:var(--border)] bg-panel-2/40">
             {[
               { k: "P10", v: forecast ? formatINR(p10) : "—", tone: "muted" },
               { k: "P50", v: forecast ? formatINR(p50) : "—", tone: "primary" },
@@ -98,15 +98,15 @@ export function ForecastHero() {
               {
                 k: "Growth",
                 v: forecast ? formatPct(growth) : "—",
-                tone: growth >= 0 ? "primary" : "error",
+                tone: growth >= 0 ? "success" : "error",
               },
               {
                 k: "Confidence",
                 v: forecast ? formatPct(confidence, 0) : "—",
-                tone: confidence > 0.85 ? "primary" : "warning",
+                tone: confidence > 0.85 ? "success" : "warning",
               },
             ].map((s) => (
-              <div key={s.k} className="px-5 py-2">
+              <div key={s.k} className="px-5 py-2.5">
                 <div className="mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground">
                   {s.k}
                 </div>
@@ -114,11 +114,13 @@ export function ForecastHero() {
                   className={`mono mt-1.5 text-[15px] font-semibold ${
                     s.tone === "primary"
                       ? "text-primary"
-                      : s.tone === "warning"
-                        ? "text-warning"
-                        : s.tone === "error"
-                          ? "text-error"
-                          : "text-foreground"
+                      : s.tone === "success"
+                        ? "text-success"
+                        : s.tone === "warning"
+                          ? "text-warning"
+                          : s.tone === "error"
+                            ? "text-error"
+                            : "text-foreground"
                   }`}
                 >
                   {s.v}
@@ -133,13 +135,13 @@ export function ForecastHero() {
           <div className="flex items-center gap-5 text-muted-foreground">
             <div className="flex items-center gap-2">
               <span
-                className="inline-block h-2 w-4"
+                className="inline-block h-2 w-4 rounded-sm"
                 style={{ background: "color-mix(in oklab, var(--primary) 28%, transparent)" }}
               />
               P10–P90 confidence band
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-block h-[2px] w-5 bg-primary" />
+              <span className="inline-block h-[2px] w-5 rounded-full gradient-primary" />
               P50 median
             </div>
           </div>
@@ -171,8 +173,12 @@ export function ForecastHero() {
                 >
                   <defs>
                     <linearGradient id="heroBandFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3FA796" stopOpacity={0.28} />
-                      <stop offset="100%" stopColor="#3FA796" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.32} />
+                      <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.02} />
+                    </linearGradient>
+                    <linearGradient id="heroLineStroke" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#22D3EE" />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke={GRID} vertical={false} />
@@ -196,7 +202,7 @@ export function ForecastHero() {
                   />
                   <Tooltip
                     content={<HeroTooltip />}
-                    cursor={{ stroke: "#3FA796", strokeOpacity: 0.4, strokeDasharray: "2 3" }}
+                    cursor={{ stroke: "#3B82F6", strokeOpacity: 0.4, strokeDasharray: "2 3" }}
                   />
                   {showBand ? (
                     <Area
@@ -211,8 +217,8 @@ export function ForecastHero() {
                   <Line
                     type="monotone"
                     dataKey="p50"
-                    stroke="#3FA796"
-                    strokeWidth={1.75}
+                    stroke="url(#heroLineStroke)"
+                    strokeWidth={2}
                     dot={false}
                     isAnimationActive
                     animationDuration={650}

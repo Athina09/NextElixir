@@ -121,7 +121,7 @@ export function CampaignPerformanceTable() {
                   <span
                     className={
                       r.confidence > 0.75
-                        ? "text-primary"
+                        ? "text-success"
                         : r.confidence > 0.6
                           ? "text-warning"
                           : "text-error"

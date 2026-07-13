@@ -32,7 +32,7 @@ export function BudgetConsole() {
   const revenueP50 = forecast?.revenue.p50 ?? 0;
 
   return (
-    <section className="flex h-full min-h-[560px] flex-col border border-[color:var(--border)] bg-panel p-6 lg:h-[620px]">
+    <section className="panel-elevated flex h-full min-h-[560px] flex-col p-6 lg:h-[620px]">
       {/* Header */}
       <div className="hairline-b flex items-end justify-between gap-3 pb-3">
 
@@ -128,7 +128,7 @@ export function BudgetConsole() {
       {/* Ask AI — pinned bottom */}
       <Link
         to="/ai-assistant"
-        className="mono mt-6 flex items-center justify-center gap-2 border border-primary/40 bg-primary/10 py-2.5 text-[11px] font-medium uppercase tracking-widest text-primary hover:bg-primary/20"
+        className="mono mt-6 flex items-center justify-center gap-2 rounded-lg gradient-primary py-2.5 text-[11px] font-medium uppercase tracking-widest text-primary-foreground shadow-md transition-opacity hover:opacity-90"
       >
         <Sparkles className="h-3 w-3" /> Ask AI to optimize
       </Link>

@@ -30,13 +30,13 @@ function toneCls(tone: Stat["tone"]) {
  */
 export function MetricStrip({ stats }: { stats: Stat[] }) {
   return (
-    <div className="hairline-t hairline-b grid grid-cols-2 divide-x divide-[color:var(--border)] md:grid-cols-3 lg:grid-cols-6">
+    <div className="panel grid grid-cols-2 divide-x divide-[color:var(--border)] overflow-hidden md:grid-cols-3 lg:grid-cols-6">
       {stats.map((s, i) => {
         const positive = (s.delta ?? 0) >= 0;
         return (
           <div
             key={i}
-            className="min-w-0 px-4 py-3 md:px-5 md:py-4"
+            className="min-w-0 px-4 py-3.5 transition-colors hover:bg-panel-2/40 md:px-5 md:py-4"
           >
             <div className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
               {s.label}
@@ -55,7 +55,7 @@ export function MetricStrip({ stats }: { stats: Stat[] }) {
                 <span
                   className={cn(
                     "flex items-center gap-0.5",
-                    positive ? "text-primary" : "text-error",
+                    positive ? "text-success" : "text-error",
                   )}
                 >
                   {positive ? (

@@ -111,7 +111,7 @@ function SettingsPage() {
           <button className="mono hairline-b rounded-sm bg-panel-2 px-3 py-1.5 text-[11px] text-muted-foreground">
             Cancel
           </button>
-          <button className="mono rounded-sm bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">
+          <button className="mono rounded-md gradient-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90">
             Save changes
           </button>
         </div>

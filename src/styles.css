@@ -4,14 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ForecastIQ — Financial analytics dark theme */
+/* ForecastIQ — Midnight Blue Fintech theme */
 
 @theme inline {
-  --radius-sm: 2px;
-  --radius-md: 3px;
-  --radius-lg: 4px;
-  --radius-xl: 6px;
-  --radius-2xl: 8px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -38,11 +38,11 @@
   --color-ring: var(--primary);
   --color-warning: var(--warning);
   --color-error: var(--error);
-  --color-success: var(--primary);
+  --color-success: var(--success);
   --color-chart-1: var(--primary);
-  --color-chart-2: #6EA8FE;
+  --color-chart-2: var(--cyan);
   --color-chart-3: var(--warning);
-  --color-chart-4: #B478F0;
+  --color-chart-4: #A78BFA;
   --color-chart-5: var(--error);
   --color-sidebar: var(--panel);
   --color-sidebar-foreground: var(--foreground);
@@ -55,30 +55,39 @@
 }
 
 :root {
-  --radius: 4px;
-  --background: #0E0F14;
-  --panel: #181A21;
-  --panel-2: #21242D;
-  --foreground: #E8E9ED;
-  --muted-foreground: #8B8F99;
-  --border: rgba(255, 255, 255, 0.07);
-  --primary: #3FA796;
-  --primary-foreground: #0E0F14;
-  --warning: #D4A24C;
-  --error: #C74E4E;
+  --radius: 10px;
+  --background: #0A0E17;
+  --panel: #121826;
+  --panel-2: #1A2233;
+  --foreground: #E9EEF7;
+  --muted-foreground: #8B96AC;
+  --border: rgba(148, 171, 209, 0.12);
+  --primary: #3B82F6;
+  --primary-foreground: #F5F9FF;
+  --cyan: #22D3EE;
+  --success: #34D399;
+  --warning: #F2B84B;
+  --error: #F0596B;
+
+  --gradient-primary: linear-gradient(135deg, #3B82F6 0%, #22D3EE 100%);
+  --glow-primary: 0 0 0 1px rgba(59, 130, 246, 0.16), 0 8px 28px -6px rgba(59, 130, 246, 0.35);
+
+  --shadow-sm: 0 1px 2px rgba(2, 5, 12, 0.45);
+  --shadow-md: 0 6px 16px -4px rgba(2, 5, 12, 0.5), 0 2px 6px -2px rgba(2, 5, 12, 0.4);
+  --shadow-lg: 0 16px 40px -12px rgba(2, 5, 12, 0.6), 0 4px 14px -4px rgba(2, 5, 12, 0.45);
 }
 
 .dark {
-  --background: #0E0F14;
-  --panel: #181A21;
-  --panel-2: #21242D;
-  --foreground: #E8E9ED;
-  --muted-foreground: #8B8F99;
-  --border: rgba(255, 255, 255, 0.07);
-  --primary: #3FA796;
-  --primary-foreground: #0E0F14;
-  --warning: #D4A24C;
-  --error: #C74E4E;
+  --background: #0A0E17;
+  --panel: #121826;
+  --panel-2: #1A2233;
+  --foreground: #E9EEF7;
+  --muted-foreground: #8B96AC;
+  --border: rgba(148, 171, 209, 0.12);
+  --primary: #3B82F6;
+  --primary-foreground: #F5F9FF;
+  --warning: #F2B84B;
+  --error: #F0596B;
 }
 
 @layer base {
@@ -92,6 +101,10 @@
 
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(1200px 480px at 12% -10%, rgba(59, 130, 246, 0.12), transparent 60%),
+      radial-gradient(900px 420px at 100% 0%, rgba(34, 211, 238, 0.08), transparent 55%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -110,14 +123,37 @@
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #2A2D36; border-radius: 8px; }
-  ::-webkit-scrollbar-thumb:hover { background: #363A45; }
+  ::-webkit-scrollbar-thumb { background: #262E40; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #34405A; }
 }
 
 @utility panel {
   background-color: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+@utility panel-elevated {
+  background-color: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+@utility gradient-primary {
+  background-image: var(--gradient-primary);
+}
+
+@utility text-gradient-primary {
+  background-image: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility glow-primary {
+  box-shadow: var(--glow-primary);
 }
 
 @utility hairline-b {

@@ -16,7 +16,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export function InsightsPanel() {
   const { insights, insightsLoading } = useForecast();
   return (
-    <div className="panel flex h-full flex-col border-l-2 border-l-primary/70">
+    <div className="panel relative flex h-full flex-col overflow-hidden">
+      <div className="absolute inset-y-0 left-0 w-[3px] gradient-primary" />
       <div className="hairline-b flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
           <Terminal className="h-3.5 w-3.5 text-primary" />
@@ -29,7 +30,7 @@ export function InsightsPanel() {
         </div>
         <div
           className={`mono flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[10px] ${
-            insightsLoading ? "bg-warning/10 text-warning" : "bg-primary/10 text-primary"
+            insightsLoading ? "bg-warning/10 text-warning" : "bg-success/10 text-success"
           }`}
         >
           <Sparkles className="h-3 w-3" />
@@ -57,7 +58,7 @@ export function InsightsPanel() {
                 <ul className="space-y-1">
                   {insights.positives.map((p) => (
                     <li key={p} className="flex gap-2">
-                      <span className="mono text-primary">+</span>
+                      <span className="mono text-success">+</span>
                       <span>{p}</span>
                     </li>
                   ))}

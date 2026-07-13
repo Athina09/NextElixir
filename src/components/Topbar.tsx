@@ -5,12 +5,12 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const { forecast, runAt } = useForecast();
   const runTime = runAt ? new Date(runAt).toLocaleTimeString("en-IN", { hour12: false }) : "—";
   return (
-    <header className="hairline-b sticky top-0 z-30 flex h-14 items-center gap-3 bg-background/90 px-4 backdrop-blur">
+    <header className="hairline-b sticky top-0 z-30 flex h-14 items-center gap-3 bg-background/80 px-4 backdrop-blur-md">
       <button
         type="button"
         onClick={onToggleSidebar}
         aria-label="Toggle sidebar"
-        className="hairline-b flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-panel-2/60 text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-panel-2/60 text-muted-foreground hover:bg-panel-2 hover:text-foreground"
       >
         <Menu className="h-4 w-4" strokeWidth={2} />
       </button>
@@ -19,12 +19,12 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <input
             placeholder="Search campaigns, channels, forecasts…"
-            className="hairline-b w-full rounded-sm bg-panel-2/60 py-1.5 pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/60"
+            className="w-full rounded-md border border-border bg-panel-2/60 py-1.5 pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/25"
           />
         </div>
       </div>
       <div className="hidden items-center gap-2 md:flex">
-        <div className="hairline-b flex items-center gap-2 rounded-sm bg-panel-2/60 px-2.5 py-1.5">
+        <div className="flex items-center gap-2 rounded-md border border-border bg-panel-2/60 px-2.5 py-1.5">
           <Database className="h-3.5 w-3.5 text-primary" />
           <div className="text-[11px] leading-tight">
             <div className="text-muted-foreground">Dataset</div>
@@ -32,16 +32,16 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
           </div>
           <ChevronDown className="h-3 w-3 text-muted-foreground" />
         </div>
-        <div className="hairline-b rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] leading-tight">
+        <div className="rounded-md border border-border bg-panel-2/60 px-2.5 py-1.5 text-[11px] leading-tight">
           <div className="text-muted-foreground">Last forecast</div>
           <div className="mono">{runTime}</div>
         </div>
-        <button className="hairline-b relative rounded-sm bg-panel-2/60 p-2 hover:bg-panel-2">
+        <button className="relative rounded-md border border-border bg-panel-2/60 p-2 hover:bg-panel-2">
           <Bell className="h-3.5 w-3.5" />
-          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-warning" />
+          <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-warning shadow-[0_0_0_2px_var(--panel)]" />
         </button>
-        <div className="flex items-center gap-2 rounded-sm bg-panel-2/60 px-2 py-1">
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-[10px] font-semibold text-primary">
+        <div className="flex items-center gap-2 rounded-md border border-border bg-panel-2/60 px-2 py-1">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full gradient-primary text-[10px] font-semibold text-primary-foreground">
             AN
           </div>
           <div className="text-[11px] leading-tight">

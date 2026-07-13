@@ -62,7 +62,7 @@ export function ChannelPerformanceTable() {
                       <Line
                         type="monotone"
                         dataKey="v"
-                        stroke="#3FA796"
+                        stroke="#3B82F6"
                         strokeWidth={1.2}
                         dot={false}
                         isAnimationActive={false}

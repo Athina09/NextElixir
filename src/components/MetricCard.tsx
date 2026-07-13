@@ -34,7 +34,7 @@ export function MetricCard({
           ? "text-error"
           : "text-foreground";
   return (
-    <div className="panel flex min-w-0 flex-col gap-2 p-3.5">
+    <div className="panel flex min-w-0 flex-col gap-2 p-3.5 transition-shadow hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 truncate text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
           {label}
@@ -80,7 +80,7 @@ export function MetricCard({
         <div
           className={cn(
             "mono flex items-center gap-1 text-[11px]",
-            positive ? "text-primary" : "text-error",
+            positive ? "text-success" : "text-error",
           )}
         >
           {positive ? (

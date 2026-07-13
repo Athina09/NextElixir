@@ -72,10 +72,10 @@ export function ChatInput({ autoFocus = true }: { autoFocus?: boolean }) {
           disabled={!value.trim() || loading}
           aria-label="Send message"
           className={cn(
-            "mono flex h-7 shrink-0 items-center gap-1.5 rounded-sm px-2.5 text-[11px] font-medium transition-colors",
+            "mono flex h-7 shrink-0 items-center gap-1.5 rounded-sm px-2.5 text-[11px] font-medium",
             !value.trim() || loading
-              ? "bg-panel-2 text-muted-foreground"
-              : "bg-primary text-primary-foreground hover:bg-primary/90",
+              ? "bg-panel-2 text-muted-foreground transition-colors"
+              : "gradient-primary text-primary-foreground shadow-sm transition-opacity hover:opacity-90",
           )}
         >
           <Send className="h-3 w-3" /> Send

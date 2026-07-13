@@ -11,7 +11,7 @@ export function DataStatusBar() {
   const { forecast, loading } = useForecast();
   return (
     <div className="hairline-b flex flex-wrap items-center gap-x-5 gap-y-1.5 bg-panel/60 px-4 py-2 text-[11px]">
-      <div className="flex items-center gap-1.5 text-primary">
+      <div className="flex items-center gap-1.5 text-success">
         <CheckCircle2 className="h-3.5 w-3.5" />
         <span>Data loaded</span>
       </div>
@@ -26,7 +26,7 @@ export function DataStatusBar() {
       <div className="group relative flex items-center gap-1.5 text-warning">
         <AlertTriangle className="h-3.5 w-3.5" />
         <span>Validation · 3 warnings</span>
-        <div className="pointer-events-none absolute left-0 top-full z-40 mt-1 w-64 rounded-sm border border-border bg-panel p-2.5 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+        <div className="pointer-events-none absolute left-0 top-full z-40 mt-1 w-64 rounded-lg border border-border bg-panel p-2.5 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
           <div className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">
             Validation warnings
           </div>
@@ -42,7 +42,7 @@ export function DataStatusBar() {
       </div>
       <div className="ml-auto flex items-center gap-1.5 text-muted-foreground">
         <span
-          className={`inline-block h-1.5 w-1.5 rounded-full ${loading ? "bg-warning animate-pulse" : "bg-primary"}`}
+          className={`inline-block h-1.5 w-1.5 rounded-full ${loading ? "bg-warning animate-pulse" : "bg-success"}`}
         />
         <span className="mono uppercase tracking-wider">
           {loading ? "computing forecast" : "forecast synced"}

@@ -52,7 +52,7 @@ function ReportsPage() {
               <FileText className="h-4 w-4 text-primary" />
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <button className="mono flex items-center gap-1.5 rounded-sm bg-primary px-2.5 py-1.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">
+              <button className="mono flex items-center gap-1.5 rounded-md gradient-primary px-2.5 py-1.5 text-[11px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90">
                 <FileDown className="h-3 w-3" /> Export PDF
               </button>
               <button className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2">

@@ -59,21 +59,21 @@ function DashboardPage() {
       {/* Page header */}
       <header className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
         <div className="min-w-0">
-          <div className="mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          <div className="mono text-[10px] uppercase tracking-[0.22em] text-gradient-primary">
             ForecastIQ · Workstation
           </div>
-          <h1 className="mt-1 truncate text-[18px] font-semibold tracking-tight">
+          <h1 className="mt-1 truncate text-[20px] font-semibold tracking-tight">
             Forecast Dashboard
           </h1>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <button
             onClick={refresh}
-            className="mono flex items-center gap-1.5 border border-[color:var(--border)] px-3 py-1.5 text-[11px] text-muted-foreground hover:text-foreground hover:border-primary/40"
+            className="mono flex items-center gap-1.5 rounded-md border border-[color:var(--border)] bg-panel-2/40 px-3 py-1.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
           >
             <RefreshCw className="h-3 w-3" /> Re-run model
           </button>
-          <button className="mono flex items-center gap-1.5 bg-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground hover:bg-primary/90">
+          <button className="mono flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-md transition-opacity hover:opacity-90">
             <Download className="h-3 w-3" /> Export report
           </button>
         </div>
@@ -144,7 +144,7 @@ function DashboardPage() {
             eyebrow="Channel intelligence"
             title="Performance by channel"
           />
-          <div className="border border-[color:var(--border)] bg-panel">
+          <div className="panel-elevated overflow-hidden">
             <ChannelPerformanceTable />
           </div>
         </section>

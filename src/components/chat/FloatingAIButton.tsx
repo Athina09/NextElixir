@@ -15,7 +15,7 @@ export function FloatingAIButton() {
         aria-label="Open AI assistant"
         className="mono fixed bottom-5 right-5 z-40 flex h-11 items-center gap-2 rounded-full border border-primary/40 bg-primary/15 pl-3 pr-4 text-[12px] font-medium text-primary shadow-lg backdrop-blur transition-colors hover:bg-primary/25"
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+        <span className="gradient-primary flex h-7 w-7 items-center justify-center rounded-full text-primary-foreground shadow-sm">
           <Sparkles className="h-3.5 w-3.5" />
         </span>
         Ask AI

@@ -110,7 +110,7 @@ function UploadPage() {
           </div>
           <button
             onClick={() => simulateUpload(`shopify_orders_${Date.now()}.csv`)}
-            className="mono mt-5 rounded-sm bg-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground hover:bg-primary/90"
+            className="mono mt-5 rounded-md gradient-primary px-3 py-1.5 text-[12px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
           >
             Simulate upload
           </button>
@@ -133,11 +133,11 @@ function UploadPage() {
           </div>
           <div className="mt-1 text-[13px] font-medium">Automated schema & integrity checks</div>
           <ul className="mono mt-3 space-y-1.5 text-[11.5px]">
-            <li className="flex items-start gap-2 text-primary">
+            <li className="flex items-start gap-2 text-success">
               <CheckCircle2 className="mt-0.5 h-3.5 w-3.5" />
               Schema matches Google Ads export v14
             </li>
-            <li className="flex items-start gap-2 text-primary">
+            <li className="flex items-start gap-2 text-success">
               <CheckCircle2 className="mt-0.5 h-3.5 w-3.5" />
               Date range coverage 100%
             </li>
@@ -186,7 +186,7 @@ function UploadPage() {
                 <td className="px-4 py-2.5">
                   <span
                     className={`mono rounded-sm px-1.5 py-0.5 text-[10px] uppercase tracking-widest ${
-                      f.status === "valid" ? "bg-primary/10 text-primary" : "bg-warning/10 text-warning"
+                      f.status === "valid" ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
                     }`}
                   >
                     {f.status === "valid" ? "valid" : `${f.warnings} warnings`}

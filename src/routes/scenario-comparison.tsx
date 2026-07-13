@@ -97,7 +97,7 @@ function DiffRow({
       <td className="mono px-4 py-2.5 text-right text-[12px]">{formatter(b)}</td>
       <td
         className={`mono px-4 py-2.5 text-right text-[12px] ${
-          positive ? "text-primary" : "text-error"
+          positive ? "text-success" : "text-error"
         }`}
       >
         {diff > 0 ? "+" : ""}
@@ -144,7 +144,7 @@ function ScenarioComparisonPage() {
             <div className="text-[13px] font-medium">Delta between scenarios (B − A)</div>
           </div>
           {winner ? (
-            <div className="mono flex items-center gap-1.5 rounded-sm bg-primary/15 px-2 py-1 text-[11px] text-primary">
+            <div className="mono flex items-center gap-1.5 rounded-md gradient-primary px-2.5 py-1 text-[11px] text-primary-foreground shadow-sm">
               <Trophy className="h-3 w-3" />
               Winner · Scenario {winner}
             </div>
