@@ -9,8 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UploadRouteImport } from './routes/upload'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ScenarioComparisonRouteImport } from './routes/scenario-comparison'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as ForecastsRouteImport } from './routes/forecasts'
+import { Route as ForecastHistoryRouteImport } from './routes/forecast-history'
+import { Route as CampaignAnalyticsRouteImport } from './routes/campaign-analytics'
+import { Route as BudgetSimulatorRouteImport } from './routes/budget-simulator'
 import { Route as IndexRouteImport } from './routes/index'
 
+const UploadRoute = UploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScenarioComparisonRoute = ScenarioComparisonRouteImport.update({
+  id: '/scenario-comparison',
+  path: '/scenario-comparison',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForecastsRoute = ForecastsRouteImport.update({
+  id: '/forecasts',
+  path: '/forecasts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForecastHistoryRoute = ForecastHistoryRouteImport.update({
+  id: '/forecast-history',
+  path: '/forecast-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignAnalyticsRoute = CampaignAnalyticsRouteImport.update({
+  id: '/campaign-analytics',
+  path: '/campaign-analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetSimulatorRoute = BudgetSimulatorRouteImport.update({
+  id: '/budget-simulator',
+  path: '/budget-simulator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +67,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/budget-simulator': typeof BudgetSimulatorRoute
+  '/campaign-analytics': typeof CampaignAnalyticsRoute
+  '/forecast-history': typeof ForecastHistoryRoute
+  '/forecasts': typeof ForecastsRoute
+  '/reports': typeof ReportsRoute
+  '/scenario-comparison': typeof ScenarioComparisonRoute
+  '/settings': typeof SettingsRoute
+  '/upload': typeof UploadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/budget-simulator': typeof BudgetSimulatorRoute
+  '/campaign-analytics': typeof CampaignAnalyticsRoute
+  '/forecast-history': typeof ForecastHistoryRoute
+  '/forecasts': typeof ForecastsRoute
+  '/reports': typeof ReportsRoute
+  '/scenario-comparison': typeof ScenarioComparisonRoute
+  '/settings': typeof SettingsRoute
+  '/upload': typeof UploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/budget-simulator': typeof BudgetSimulatorRoute
+  '/campaign-analytics': typeof CampaignAnalyticsRoute
+  '/forecast-history': typeof ForecastHistoryRoute
+  '/forecasts': typeof ForecastsRoute
+  '/reports': typeof ReportsRoute
+  '/scenario-comparison': typeof ScenarioComparisonRoute
+  '/settings': typeof SettingsRoute
+  '/upload': typeof UploadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/budget-simulator'
+    | '/campaign-analytics'
+    | '/forecast-history'
+    | '/forecasts'
+    | '/reports'
+    | '/scenario-comparison'
+    | '/settings'
+    | '/upload'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/budget-simulator'
+    | '/campaign-analytics'
+    | '/forecast-history'
+    | '/forecasts'
+    | '/reports'
+    | '/scenario-comparison'
+    | '/settings'
+    | '/upload'
+  id:
+    | '__root__'
+    | '/'
+    | '/budget-simulator'
+    | '/campaign-analytics'
+    | '/forecast-history'
+    | '/forecasts'
+    | '/reports'
+    | '/scenario-comparison'
+    | '/settings'
+    | '/upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BudgetSimulatorRoute: typeof BudgetSimulatorRoute
+  CampaignAnalyticsRoute: typeof CampaignAnalyticsRoute
+  ForecastHistoryRoute: typeof ForecastHistoryRoute
+  ForecastsRoute: typeof ForecastsRoute
+  ReportsRoute: typeof ReportsRoute
+  ScenarioComparisonRoute: typeof ScenarioComparisonRoute
+  SettingsRoute: typeof SettingsRoute
+  UploadRoute: typeof UploadRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/upload': {
+      id: '/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scenario-comparison': {
+      id: '/scenario-comparison'
+      path: '/scenario-comparison'
+      fullPath: '/scenario-comparison'
+      preLoaderRoute: typeof ScenarioComparisonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forecasts': {
+      id: '/forecasts'
+      path: '/forecasts'
+      fullPath: '/forecasts'
+      preLoaderRoute: typeof ForecastsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forecast-history': {
+      id: '/forecast-history'
+      path: '/forecast-history'
+      fullPath: '/forecast-history'
+      preLoaderRoute: typeof ForecastHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/campaign-analytics': {
+      id: '/campaign-analytics'
+      path: '/campaign-analytics'
+      fullPath: '/campaign-analytics'
+      preLoaderRoute: typeof CampaignAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/budget-simulator': {
+      id: '/budget-simulator'
+      path: '/budget-simulator'
+      fullPath: '/budget-simulator'
+      preLoaderRoute: typeof BudgetSimulatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +217,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BudgetSimulatorRoute: BudgetSimulatorRoute,
+  CampaignAnalyticsRoute: CampaignAnalyticsRoute,
+  ForecastHistoryRoute: ForecastHistoryRoute,
+  ForecastsRoute: ForecastsRoute,
+  ReportsRoute: ReportsRoute,
+  ScenarioComparisonRoute: ScenarioComparisonRoute,
+  SettingsRoute: SettingsRoute,
+  UploadRoute: UploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
