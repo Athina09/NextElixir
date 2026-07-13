@@ -67,8 +67,8 @@ export function ForecastHero() {
   const confidence = forecast?.confidence ?? 0;
 
   return (
-    <section className="hairline-b -mx-4 md:-mx-6">
-      <div className="mx-auto max-w-[1600px] px-4 pb-8 pt-6 md:px-6 md:pb-10 md:pt-8">
+    <section className="flex h-full min-h-[560px] flex-col border border-[color:var(--border)] bg-panel lg:h-[620px]">
+      <div className="flex h-full min-h-0 flex-col p-6">
         {/* Header row */}
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
