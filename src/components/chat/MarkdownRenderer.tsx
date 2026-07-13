@@ -5,8 +5,8 @@
 
 import { Fragment } from "react";
 
-function inline(text: string): (string | JSX.Element)[] {
-  const parts: (string | JSX.Element)[] = [];
+function inline(text: string): (string | React.ReactElement)[] {
+  const parts: (string | React.ReactElement)[] = [];
   const regex = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g;
   let last = 0;
   let m: RegExpExecArray | null;
@@ -33,7 +33,7 @@ function inline(text: string): (string | JSX.Element)[] {
 
 export function MarkdownRenderer({ source }: { source: string }) {
   const lines = source.split(/\r?\n/);
-  const blocks: JSX.Element[] = [];
+  const blocks: React.ReactElement[] = [];
   let i = 0;
   let key = 0;
 
