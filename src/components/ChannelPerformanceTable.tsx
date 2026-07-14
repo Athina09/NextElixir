@@ -1,6 +1,7 @@
 import { useForecast } from "@/lib/forecast-context";
 import { formatINR, formatMultiple, formatPct } from "@/lib/format";
 import { Line, LineChart, ResponsiveContainer } from "recharts";
+import { ChannelLogo } from "@/components/PlatformLogos";
 
 export function ChannelPerformanceTable() {
   const { forecast } = useForecast();
@@ -32,7 +33,7 @@ export function ChannelPerformanceTable() {
             <tr key={r.name} className="hairline-b transition hover:bg-panel-2/40">
               <td className="px-4 py-2.5">
                 <div className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  <ChannelLogo channel={r.name} size={16} className="shrink-0" />
                   {r.name}
                 </div>
               </td>

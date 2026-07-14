@@ -12,7 +12,7 @@ import type { ChatMessage as Msg } from "@/lib/chat-context";
 import { useChat } from "@/hooks/useChat";
 
 const KIND_LABEL: Record<string, string> = {
-  assistant: "Assistant",
+  assistant: "ForecastIQ AI",
   "forecast-summary": "Forecast Summary",
   "budget-optimization": "Budget Optimization",
   recommendation: "Recommendation",
@@ -38,10 +38,10 @@ export function ChatMessage({ message }: { message: Msg }) {
           "flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border",
           isUser
             ? "border-border bg-panel-2 text-muted-foreground"
-            : "border-primary/40 bg-primary/10 text-primary",
+            : "border-primary/30 gradient-primary text-primary-foreground",
         )}
       >
-        {isUser ? <User className="h-3.5 w-3.5" /> : <Sparkles className="h-3.5 w-3.5" />}
+        {isUser ? <User className="h-3.5 w-3.5" /> : <Sparkles className="h-3.5 w-3.5" strokeWidth={2.25} />}
       </div>
       <div className="min-w-0 flex-1">
         <div className="mb-1 flex items-center gap-2">

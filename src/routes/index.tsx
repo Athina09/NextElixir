@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { RefreshCw, Download } from "lucide-react";
+import { RefreshCw, Download, TrendingUp, Target, ArrowUpRight, ShieldCheck, Layers, Cpu } from "lucide-react";
 import { ForecastHero } from "@/components/dashboard/ForecastHero";
 import { MetricStrip } from "@/components/dashboard/MetricStrip";
 import { BudgetConsole } from "@/components/dashboard/BudgetConsole";
@@ -55,7 +55,7 @@ function DashboardPage() {
   const { forecast, refresh } = useForecast();
 
   return (
-    <div className="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6">
+    <div className="mx-auto w-full max-w-[1600px] px-4 py-6 pb-24 md:px-6 md:pb-24">
       {/* Page header */}
       <header className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
         <div className="min-w-0">
@@ -92,18 +92,21 @@ function DashboardPage() {
                 : "",
               tone: "primary",
               emphasis: true,
+              icon: <TrendingUp className="h-3 w-3" />,
             },
             {
               label: "ROAS",
               value: forecast ? formatMultiple(forecast.roas.p50) : "—",
               delta: 0.062,
               sub: "blended",
+              icon: <Target className="h-3 w-3" />,
             },
             {
               label: "Growth",
               value: forecast ? formatPct(forecast.growth) : "—",
               delta: forecast?.growth,
               sub: "wow",
+              icon: <ArrowUpRight className="h-3 w-3" />,
             },
             {
               label: "Confidence",
@@ -111,16 +114,19 @@ function DashboardPage() {
               tone:
                 forecast && forecast.confidence > 0.85 ? "primary" : "warning",
               sub: "90% CI",
+              icon: <ShieldCheck className="h-3 w-3" />,
             },
             {
               label: "Campaigns",
               value: forecast ? formatNumber(forecast.campaigns.length) : "—",
               sub: "in horizon",
+              icon: <Layers className="h-3 w-3" />,
             },
             {
               label: "Model MAPE",
               value: "6.6%",
               sub: "backtest 90D · v4.2.1",
+              icon: <Cpu className="h-3 w-3" />,
             },
           ]}
         />

@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { DataStatusBar } from "./DataStatusBar";
+import { NetElixirLogo } from "@/components/PlatformLogos";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -42,10 +43,11 @@ export function PageContainer({
   children: ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-6">
+    <div className="mx-auto w-full max-w-[1600px] px-4 py-6 pb-24 md:px-6 md:pb-24">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-[10px] font-medium uppercase tracking-[0.16em] text-gradient-primary">
+          <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-gradient-primary">
+            <NetElixirLogo size={14} />
             ForecastIQ
           </div>
           <h1 className="mt-1 text-[24px] font-semibold tracking-tight text-foreground">

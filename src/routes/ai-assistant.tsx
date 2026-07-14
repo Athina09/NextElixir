@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AIChatWindow } from "@/components/chat/AIChatWindow";
 import { ChatHeader } from "@/components/chat/ChatHeader";
-import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { ForecastContextPanel } from "@/components/chat/ForecastContextPanel";
 
 export const Route = createFileRoute("/ai-assistant")({
@@ -27,10 +26,9 @@ export const Route = createFileRoute("/ai-assistant")({
 function AIAssistantPage() {
   return (
     <div className="flex h-[calc(100dvh-6.5rem)] min-h-0">
-      <ChatSidebar />
       <section className="flex min-w-0 flex-1 flex-col bg-background">
         <ChatHeader />
-        <div className="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div className="hairline-r flex min-h-0 min-w-0 flex-col">
             <AIChatWindow />
           </div>

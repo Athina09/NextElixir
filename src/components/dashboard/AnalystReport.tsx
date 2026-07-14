@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Terminal, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useForecast } from "@/lib/forecast-context";
+import { NetElixirLogo } from "@/components/PlatformLogos";
 
 function Block({
   title,
@@ -34,11 +35,19 @@ export function AnalystReport() {
       <div className="hairline-b flex items-center justify-between pb-3">
         <div>
           <div className="mono flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            <Terminal className="h-3 w-3 text-primary" />
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm gradient-primary text-primary-foreground">
+              <Sparkles className="h-2.5 w-2.5" strokeWidth={2.5} />
+            </div>
             AI Forecast Analysis
           </div>
-          <div className="mt-1 text-[15px] font-semibold tracking-tight">
-            Analyst reasoning · explainable model output
+          <div className="mt-1 flex items-center gap-2">
+            <div className="text-[15px] font-semibold tracking-tight">
+              Analyst reasoning · explainable model output
+            </div>
+          </div>
+          <div className="mono mt-1 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <NetElixirLogo size={12} />
+            <span>Powered by NetElixir ForecastIQ</span>
           </div>
         </div>
         <div

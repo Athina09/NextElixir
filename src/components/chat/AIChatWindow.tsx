@@ -28,13 +28,17 @@ export function AIChatWindow({ dense = false }: { dense?: boolean }) {
           </div>
         )}
       </div>
-      <div className="hairline-t bg-panel/60 px-3 py-2">
-        <div className="mono mb-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          Suggested questions
+      {/* Suggested questions — only show on the full page, not in floating drawer */}
+      {!dense && (
+        <div className="hairline-t bg-panel/60 px-3 py-2">
+          <div className="mono mb-1.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            Suggested questions
+          </div>
+          <SuggestedQuestions compact={false} />
         </div>
-        <SuggestedQuestions compact={dense} />
-      </div>
+      )}
       <ChatInput />
     </div>
   );
 }
+

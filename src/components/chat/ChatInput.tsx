@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mic, Paperclip, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { useChat } from "@/hooks/useChat";
 import { cn } from "@/lib/utils";
 
@@ -34,15 +34,7 @@ export function ChatInput({ autoFocus = true }: { autoFocus?: boolean }) {
 
   return (
     <div className="hairline-t bg-panel/80 p-3">
-      <div className="hairline-b flex items-end gap-2 rounded-sm bg-panel-2/60 p-2">
-        <button
-          type="button"
-          disabled
-          aria-label="Attach file"
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-muted-foreground/40"
-        >
-          <Paperclip className="h-3.5 w-3.5" />
-        </button>
+      <div className="flex items-end gap-2 rounded-md border border-border bg-panel-2/60 px-3 py-2">
         <textarea
           ref={ref}
           value={value}
@@ -53,38 +45,27 @@ export function ChatInput({ autoFocus = true }: { autoFocus?: boolean }) {
               submit();
             }
           }}
-          placeholder="Ask anything about your forecast..."
+          placeholder="Ask about your forecast…"
           rows={1}
           aria-label="Chat message"
-          className="mono max-h-40 min-h-[28px] flex-1 resize-none bg-transparent px-1 py-1 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+          className="mono max-h-32 min-h-[24px] flex-1 resize-none bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
         />
-        <button
-          type="button"
-          disabled
-          aria-label="Voice input"
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-muted-foreground/40"
-        >
-          <Mic className="h-3.5 w-3.5" />
-        </button>
         <button
           type="button"
           onClick={submit}
           disabled={!value.trim() || loading}
           aria-label="Send message"
           className={cn(
-            "mono flex h-7 shrink-0 items-center gap-1.5 rounded-sm px-2.5 text-[11px] font-medium",
+            "mono flex h-7 shrink-0 items-center gap-1 rounded-md px-2.5 text-[11px] font-medium transition-opacity",
             !value.trim() || loading
-              ? "bg-panel-2 text-muted-foreground transition-colors"
-              : "gradient-primary text-primary-foreground shadow-sm transition-opacity hover:opacity-90",
+              ? "bg-panel-2 text-muted-foreground"
+              : "gradient-primary text-primary-foreground shadow-sm hover:opacity-90",
           )}
         >
           <Send className="h-3 w-3" /> Send
         </button>
       </div>
-      <div className="mono mt-1.5 flex items-center justify-between px-1 text-[10px] text-muted-foreground">
-        <span>Enter to send · Shift+Enter for newline</span>
-        <span>Ctrl+/ focus</span>
-      </div>
     </div>
   );
 }
+

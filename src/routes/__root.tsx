@@ -15,6 +15,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { ForecastProvider } from "@/lib/forecast-context";
 import { ChatProvider } from "@/lib/chat-context";
 import { FloatingAIButton } from "@/components/chat/FloatingAIButton";
+import { ThemeProvider } from "@/lib/theme-context";
 
 function NotFoundComponent() {
   return (
@@ -135,14 +136,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ForecastProvider>
-        <ChatProvider>
-          <AppLayout>
-            <Outlet />
-          </AppLayout>
-          <FloatingAIButton />
-        </ChatProvider>
-      </ForecastProvider>
+      <ThemeProvider>
+        <ForecastProvider>
+          <ChatProvider>
+            <AppLayout>
+              <Outlet />
+            </AppLayout>
+            <FloatingAIButton />
+          </ChatProvider>
+        </ForecastProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

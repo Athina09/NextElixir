@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useForecast } from "@/lib/forecast-context";
 import type { Horizon } from "@/lib/forecast";
 import { formatINR } from "@/lib/format";
+import { ChannelLogo } from "@/components/PlatformLogos";
 
 
 const MAX = 5_000_000;
@@ -87,8 +88,11 @@ export function BudgetConsole() {
             <div key={row.key} className="min-w-0">
               <div className="flex items-baseline justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="truncate text-[13px] font-medium">{row.label}</div>
-                  <div className="mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <ChannelLogo channel={row.label} size={18} className="shrink-0" />
+                    <div className="truncate text-[13px] font-medium">{row.label}</div>
+                  </div>
+                  <div className="mono mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
                     {pct.toFixed(0)}% allocation
                   </div>
                 </div>

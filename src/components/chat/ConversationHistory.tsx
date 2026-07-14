@@ -1,9 +1,13 @@
+/**
+ * ConversationHistory — simplified.
+ * Tighter, cleaner conversation list items with no message count badge.
+ */
 import { MessageSquare } from "lucide-react";
 import { useChat } from "@/hooks/useChat";
 import type { Conversation } from "@/lib/chat-context";
 import { cn } from "@/lib/utils";
 
-const BUCKET_LABEL = { today: "Today", yesterday: "Yesterday", week: "Last Week" } as const;
+const BUCKET_LABEL = { today: "Today", yesterday: "Yesterday", week: "This week" } as const;
 
 export function ConversationHistory() {
   const { conversations, activeId, selectConversation } = useChat();
@@ -15,11 +19,11 @@ export function ConversationHistory() {
   conversations.forEach((c) => buckets[c.bucket].push(c));
 
   return (
-    <div className="flex flex-col gap-3 p-2">
+    <div className="flex flex-col gap-2 py-1">
       {(Object.keys(buckets) as (keyof typeof buckets)[]).map((k) =>
         buckets[k].length ? (
           <div key={k}>
-            <div className="mono px-2 pb-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+            <div className="mono px-2 pb-1 text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
               {BUCKET_LABEL[k]}
             </div>
             <ul className="space-y-0.5">
@@ -28,17 +32,14 @@ export function ConversationHistory() {
                   <button
                     onClick={() => selectConversation(c.id)}
                     className={cn(
-                      "flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-[12.5px] transition-colors",
+                      "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[11.5px] transition-colors",
                       c.id === activeId
-                        ? "bg-panel-2 text-foreground"
+                        ? "bg-primary/10 text-foreground"
                         : "text-muted-foreground hover:bg-panel-2 hover:text-foreground",
                     )}
                   >
-                    <MessageSquare className="mt-0.5 h-3 w-3 shrink-0 text-primary/70" />
+                    <MessageSquare className="h-3 w-3 shrink-0 text-primary/60" />
                     <span className="min-w-0 flex-1 truncate">{c.title}</span>
-                    <span className="mono shrink-0 text-[10px] text-muted-foreground">
-                      {c.messages.length}
-                    </span>
                   </button>
                 </li>
               ))}

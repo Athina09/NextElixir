@@ -1,5 +1,7 @@
 import { Bell, Search, ChevronDown, Database, Menu } from "lucide-react";
 import { useForecast } from "@/lib/forecast-context";
+import { ShopifyLogo } from "@/components/PlatformLogos";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const { forecast, runAt } = useForecast();
@@ -24,18 +26,13 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
         </div>
       </div>
       <div className="hidden items-center gap-2 md:flex">
-        <div className="flex items-center gap-2 rounded-md border border-border bg-panel-2/60 px-2.5 py-1.5">
-          <Database className="h-3.5 w-3.5 text-primary" />
-          <div className="text-[11px] leading-tight">
-            <div className="text-muted-foreground">Dataset</div>
-            <div className="mono text-[11px]">acme_retail_2024_06</div>
-          </div>
-          <ChevronDown className="h-3 w-3 text-muted-foreground" />
-        </div>
+
         <div className="rounded-md border border-border bg-panel-2/60 px-2.5 py-1.5 text-[11px] leading-tight">
           <div className="text-muted-foreground">Last forecast</div>
           <div className="mono">{runTime}</div>
         </div>
+        {/* Theme switcher */}
+        <ThemeSwitcher />
         <button className="relative rounded-md border border-border bg-panel-2/60 p-2 hover:bg-panel-2">
           <Bell className="h-3.5 w-3.5" />
           <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-warning shadow-[0_0_0_2px_var(--panel)]" />
@@ -50,9 +47,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
           </div>
         </div>
       </div>
-      <div className="mono ml-2 hidden text-[10px] text-muted-foreground lg:block">
-        {forecast ? `${forecast.horizon}D · ${forecast.campaigns.length} campaigns` : "loading…"}
-      </div>
+
     </header>
   );
 }

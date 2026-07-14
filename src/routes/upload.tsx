@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageContainer } from "@/components/AppLayout";
 import { UploadCloud, FileCheck2, AlertTriangle, CheckCircle2, X } from "lucide-react";
+import { ChannelLogo } from "@/components/PlatformLogos";
 
 export const Route = createFileRoute("/upload")({
   head: () => ({
@@ -102,8 +103,9 @@ function UploadPage() {
             {SOURCES.map((s) => (
               <span
                 key={s}
-                className="mono hairline-b rounded-sm bg-panel-2/60 px-1.5 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground"
+                className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-1.5 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground"
               >
+                <ChannelLogo channel={s} size={12} className="shrink-0" />
                 {s}
               </span>
             ))}
@@ -180,7 +182,12 @@ function UploadPage() {
                     <span className="mono text-[11.5px]">{f.name}</span>
                   </div>
                 </td>
-                <td className="px-2 py-2.5 text-muted-foreground">{f.source}</td>
+                <td className="px-2 py-2.5 text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <ChannelLogo channel={f.source} size={14} className="shrink-0" />
+                    <span>{f.source}</span>
+                  </div>
+                </td>
                 <td className="mono px-2 py-2.5 text-right">{f.rows.toLocaleString("en-IN")}</td>
                 <td className="mono px-2 py-2.5 text-right text-muted-foreground">{f.size}</td>
                 <td className="px-4 py-2.5">

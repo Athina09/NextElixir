@@ -9,6 +9,7 @@ export interface Stat {
   delta?: number;
   tone?: "default" | "primary" | "warning" | "error";
   emphasis?: boolean;
+  icon?: ReactNode;
 }
 
 function toneCls(tone: Stat["tone"]) {
@@ -38,7 +39,10 @@ export function MetricStrip({ stats }: { stats: Stat[] }) {
             key={i}
             className="min-w-0 px-4 py-3.5 transition-colors hover:bg-panel-2/40 md:px-5 md:py-4"
           >
-            <div className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+              {s.icon ? (
+                <span className="shrink-0 opacity-70">{s.icon}</span>
+              ) : null}
               {s.label}
             </div>
             <div

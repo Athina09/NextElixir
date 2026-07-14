@@ -2,12 +2,12 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   TrendingUp,
-  Target,
-  Sliders,
+  BarChart3,
+  Calculator,
   GitCompareArrows,
   History,
   Upload,
-  FileText,
+  BookOpen,
   Settings as SettingsIcon,
   Sparkles,
   PanelLeftClose,
@@ -21,12 +21,12 @@ const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/forecasts", label: "Forecasts", icon: TrendingUp },
   { to: "/ai-assistant", label: "AI Assistant", icon: Bot },
-  { to: "/campaign-analytics", label: "Campaign Analytics", icon: Target },
-  { to: "/budget-simulator", label: "Budget Simulator", icon: Sliders },
+  { to: "/campaign-analytics", label: "Campaign Analytics", icon: BarChart3 },
+  { to: "/budget-simulator", label: "Budget Simulator", icon: Calculator },
   { to: "/scenario-comparison", label: "Scenario Comparison", icon: GitCompareArrows },
   { to: "/forecast-history", label: "Forecast History", icon: History },
   { to: "/upload", label: "Upload Data", icon: Upload },
-  { to: "/reports", label: "Reports", icon: FileText },
+  { to: "/reports", label: "Reports", icon: BookOpen },
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 
@@ -110,7 +110,7 @@ export function Sidebar({
               <div className="min-w-0 flex-1 leading-tight">
                 <div className="text-[13px] font-semibold tracking-tight">ForecastIQ</div>
                 <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  NetElixir
+                  Powered by NetElixir
                 </div>
               </div>
               <button

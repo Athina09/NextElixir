@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useForecast } from "@/lib/forecast-context";
 import { formatINR, formatMultiple, formatPct } from "@/lib/format";
+import { ChannelLogo } from "@/components/PlatformLogos";
 
 type SortKey = "name" | "channel" | "spend" | "revenue" | "roas" | "ctr" | "conv" | "confidence";
 
@@ -105,7 +106,12 @@ export function CampaignPerformanceTable() {
                   <div className="text-foreground">{r.name}</div>
                   <div className="mono text-[10px] text-muted-foreground">{r.id} · {r.type}</div>
                 </td>
-                <td className="px-2 py-2 text-muted-foreground">{r.channel}</td>
+                <td className="px-2 py-2 text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <ChannelLogo channel={r.channel} size={14} className="shrink-0" />
+                    <span>{r.channel}</span>
+                  </div>
+                </td>
                 <td className="mono px-2 py-2 text-right">{formatINR(r.spend)}</td>
                 <td className="mono px-2 py-2 text-right">{formatINR(r.revenue)}</td>
                 <td className="mono px-2 py-2 text-right text-primary">

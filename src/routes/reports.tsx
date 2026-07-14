@@ -3,7 +3,8 @@ import { PageContainer } from "@/components/AppLayout";
 import { InsightsPanel } from "@/components/InsightsPanel";
 import { useForecast } from "@/lib/forecast-context";
 import { formatINR, formatMultiple, formatPct } from "@/lib/format";
-import { FileText, FileSpreadsheet, FileDown, Sparkles } from "lucide-react";
+import { FileText, FileSpreadsheet, FileDown, Sparkles, Presentation } from "lucide-react";
+import { NetElixirLogo } from "@/components/PlatformLogos";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({
@@ -59,7 +60,10 @@ function ReportsPage() {
                 <FileSpreadsheet className="h-3 w-3" /> Excel
               </button>
               <button className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2">
-                CSV
+                <FileText className="h-3 w-3" /> CSV
+              </button>
+              <button className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2">
+                <Presentation className="h-3 w-3" /> PPT
               </button>
             </div>
           </div>
@@ -69,10 +73,19 @@ function ReportsPage() {
       <div className="mt-3 grid gap-3 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="panel p-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-sm gradient-primary text-primary-foreground">
+              <Sparkles className="h-2.5 w-2.5" strokeWidth={2.5} />
+            </div>
             <div className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
               AI Executive summary
             </div>
+            <span className="mono rounded-sm bg-primary/15 px-1.5 py-[1px] text-[9px] uppercase tracking-widest text-primary">
+              ForecastIQ AI
+            </span>
+          </div>
+          <div className="mono mt-1 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <NetElixirLogo size={12} />
+            <span>Powered by NetElixir</span>
           </div>
           <div className="mt-3 space-y-2 text-[12.5px] leading-relaxed">
             <p>
