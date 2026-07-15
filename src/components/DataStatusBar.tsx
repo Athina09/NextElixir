@@ -15,11 +15,11 @@ export function DataStatusBar() {
         <CheckCircle2 className="h-3.5 w-3.5" />
         <span>Data loaded</span>
       </div>
-      <div className="flex items-center gap-1.5 text-muted-foreground">
+      <div className="hidden items-center gap-1.5 text-muted-foreground sm:flex">
         <Layers className="h-3.5 w-3.5" />
         <span className="mono">{forecast?.campaigns.length ?? 0} × campaigns · 1,238 total</span>
       </div>
-      <div className="flex items-center gap-1.5 text-muted-foreground">
+      <div className="hidden items-center gap-1.5 text-muted-foreground sm:flex">
         <CalendarRange className="h-3.5 w-3.5" />
         <span className="mono">Jan 2024 – Jun 2026</span>
       </div>
@@ -40,7 +40,7 @@ export function DataStatusBar() {
           </ul>
         </div>
       </div>
-      <div className="ml-auto flex items-center gap-1.5 text-muted-foreground">
+      <div className="ml-auto hidden items-center gap-1.5 text-muted-foreground sm:flex">
         <span
           className={`inline-block h-1.5 w-1.5 rounded-full ${loading ? "bg-warning animate-pulse" : "bg-success"}`}
         />

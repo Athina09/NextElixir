@@ -44,20 +44,22 @@ export function PageContainer({
 }) {
   return (
     <div className="mx-auto w-full max-w-[1600px] px-4 py-6 pb-24 md:px-6 md:pb-24">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-gradient-primary">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.16em] text-gradient-primary">
             <NetElixirLogo size={14} />
             ForecastIQ
           </div>
-          <h1 className="mt-1 text-[24px] font-semibold tracking-tight text-foreground">
+          <h1 className="mt-1 truncate text-[24px] font-semibold tracking-tight text-foreground">
             {title}
           </h1>
           {description ? (
             <p className="mt-1.5 max-w-2xl text-[13px] text-muted-foreground">{description}</p>
           ) : null}
         </div>
-        {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+        {actions ? (
+          <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>
+        ) : null}
       </div>
       {children}
     </div>

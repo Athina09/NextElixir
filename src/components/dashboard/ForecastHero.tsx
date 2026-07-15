@@ -89,8 +89,8 @@ export function ForecastHero() {
             </div>
           </div>
 
-          {/* Horizontal stat row */}
-          <div className="flex items-stretch gap-0 divide-x divide-[color:var(--border)] rounded-lg border border-[color:var(--border)] bg-panel-2/40">
+          {/* Horizontal stat row — scrolls instead of clipping on narrow screens */}
+          <div className="flex max-w-full items-stretch gap-0 divide-x divide-[color:var(--border)] overflow-x-auto rounded-lg border border-[color:var(--border)] bg-panel-2/40">
             {[
               { k: "P10", v: forecast ? formatINR(p10) : "—", tone: "muted" },
               { k: "P50", v: forecast ? formatINR(p50) : "—", tone: "primary" },
@@ -106,7 +106,7 @@ export function ForecastHero() {
                 tone: confidence > 0.85 ? "success" : "warning",
               },
             ].map((s) => (
-              <div key={s.k} className="px-5 py-2.5">
+              <div key={s.k} className="shrink-0 px-3.5 py-2.5 sm:px-5">
                 <div className="mono text-[9.5px] uppercase tracking-[0.18em] text-muted-foreground">
                   {s.k}
                 </div>

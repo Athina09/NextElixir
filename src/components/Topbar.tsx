@@ -12,7 +12,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
         type="button"
         onClick={onToggleSidebar}
         aria-label="Toggle sidebar"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-panel-2/60 text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-panel-2/60 text-muted-foreground hover:bg-panel-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
       >
         <Menu className="h-4 w-4" strokeWidth={2} />
       </button>
@@ -21,7 +21,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <input
             placeholder="Search campaigns, channels, forecasts…"
-            className="w-full rounded-md border border-border bg-panel-2/60 py-1.5 pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/25"
+            className="w-full rounded-md border border-border bg-panel-2/60 py-1.5 pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground transition-colors focus-visible:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
           />
         </div>
       </div>
@@ -33,7 +33,7 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
         </div>
         {/* Theme switcher */}
         <ThemeSwitcher />
-        <button className="relative rounded-md border border-border bg-panel-2/60 p-2 hover:bg-panel-2">
+        <button className="relative rounded-md border border-border bg-panel-2/60 p-2 hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
           <Bell className="h-3.5 w-3.5" />
           <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-warning shadow-[0_0_0_2px_var(--panel)]" />
         </button>

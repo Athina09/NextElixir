@@ -50,7 +50,7 @@ function NavList({
               onClick={onNavigate}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "group relative flex items-center gap-2.5 rounded-md py-1.5 text-[13px] transition-colors",
+                "group relative flex items-center gap-2.5 rounded-md py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 collapsed ? "justify-center px-0" : active ? "pl-3.5 pr-2.5" : "px-2.5",
                 active
                   ? "bg-panel-2 text-foreground shadow-sm"
@@ -117,7 +117,7 @@ export function Sidebar({
                 type="button"
                 onClick={onToggle}
                 aria-label="Collapse sidebar"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-panel-2 hover:text-foreground"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-panel-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 <PanelLeftClose className="h-3.5 w-3.5" strokeWidth={2} />
               </button>

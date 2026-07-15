@@ -57,23 +57,23 @@ function DashboardPage() {
   return (
     <div className="mx-auto w-full max-w-[1600px] px-4 py-6 pb-24 md:px-6 md:pb-24">
       {/* Page header */}
-      <header className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <div className="mono text-[10px] uppercase tracking-[0.22em] text-gradient-primary">
+          <div className="mono whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-gradient-primary">
             ForecastIQ · Workstation
           </div>
           <h1 className="mt-1 truncate text-[20px] font-semibold tracking-tight">
             Forecast Dashboard
           </h1>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           <button
             onClick={refresh}
-            className="mono flex items-center gap-1.5 rounded-md border border-[color:var(--border)] bg-panel-2/40 px-3 py-1.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            className="mono flex items-center gap-1.5 rounded-md border border-[color:var(--border)] bg-panel-2/40 px-3 py-1.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
           >
             <RefreshCw className="h-3 w-3" /> Re-run model
           </button>
-          <button className="mono flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-md transition-opacity hover:opacity-90">
+          <button className="mono flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
             <Download className="h-3 w-3" /> Export report
           </button>
         </div>
