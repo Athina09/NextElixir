@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException
-from groq import RateLimitError
+from groq import APIStatusError, RateLimitError
 from sqlalchemy.orm import Session
 
 from forecastiq.api.data_store import DataStore
@@ -59,8 +59,14 @@ def send_chat_message(
         assistant_payload = generate_chat_response(groq_client, payload.message, context)
     except GroqNotConfiguredError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
-    except (RateLimitError, LLMRateLimitError) as exc:
-        raise HTTPException(status_code=429, detail=str(exc)) from exc
+    except (RateLimitError, LLMRateLimitError, APIStatusError) as exc:
+        detail = str(exc)
+        if "413" in detail or "429" in detail or "rate_limit" in detail.lower() or "too large" in detail.lower():
+            raise HTTPException(
+                status_code=429,
+                detail="LLM rate/size limit hit — try again shortly, or ask a shorter question.",
+            ) from exc
+        raise HTTPException(status_code=502, detail=detail[:400]) from exc
 
     repo.add_message(
         session_id=session.id,

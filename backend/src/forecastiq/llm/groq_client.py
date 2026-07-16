@@ -32,8 +32,11 @@ def _schema_instructions(response_schema: type[BaseModel]) -> str:
     """A compact description of the required JSON shape, derived straight from
     the Pydantic model so the prompt can never drift from the schema used to
     validate the response."""
+    # Prefer a short properties map over the full recursive JSON Schema —
+    # free-tier Groq TPM budgets choke on the expanded $defs dump.
     schema = response_schema.model_json_schema()
-    return json.dumps(schema, indent=2)
+    props = schema.get("properties") or schema
+    return json.dumps(props, indent=2)
 
 
 class GroqClient:
