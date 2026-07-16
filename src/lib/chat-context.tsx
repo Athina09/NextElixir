@@ -8,11 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { useForecast } from "@/lib/forecast-context";
-import {
-  generateResponse,
-  type AssistantPayload,
-  type MessageKind,
-} from "@/services/chatService";
+import { generateResponse, type AssistantPayload, type MessageKind } from "@/services/chatService";
 
 export interface ChatMessage {
   id: string;
@@ -31,6 +27,9 @@ export interface Conversation {
   updatedAt: number;
   bucket: "today" | "yesterday" | "week";
   messages: ChatMessage[];
+  /** The backend ChatSession id this conversation maps to, once the first
+   * real reply comes back — keeps every turn in one server-side history. */
+  backendSessionId?: number;
 }
 
 interface Ctx {
@@ -109,15 +108,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const lastPromptRef = useRef<string>("");
 
-  const active =
-    conversations.find((c) => c.id === activeId) ?? conversations[0];
+  const active = conversations.find((c) => c.id === activeId) ?? conversations[0];
 
-  const patchConversation = useCallback(
-    (id: string, mut: (c: Conversation) => Conversation) => {
-      setConversations((prev) => prev.map((c) => (c.id === id ? mut(c) : c)));
-    },
-    [],
-  );
+  const patchConversation = useCallback((id: string, mut: (c: Conversation) => Conversation) => {
+    setConversations((prev) => prev.map((c) => (c.id === id ? mut(c) : c)));
+  }, []);
 
   const send = useCallback(
     async (text: string) => {
@@ -146,9 +141,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       patchConversation(active.id, (c) => ({
         ...c,
         title:
-          c.messages.length === 0
-            ? clean.slice(0, 48) + (clean.length > 48 ? "…" : "")
-            : c.title,
+          c.messages.length === 0 ? clean.slice(0, 48) + (clean.length > 48 ? "…" : "") : c.title,
         updatedAt: now,
         messages: [...c.messages, userMsg, pendingMsg],
       }));
@@ -162,9 +155,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           horizon: forecast.state.horizon,
           level: forecast.state.level,
           channel: forecast.state.channelFilter,
+          sessionId: active.backendSessionId,
         });
         patchConversation(active.id, (c) => ({
           ...c,
+          backendSessionId: payload.sessionId ?? c.backendSessionId,
           updatedAt: Date.now(),
           messages: c.messages.map((m) =>
             m.id === pendingId
@@ -179,12 +174,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           ),
         }));
       } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Request failed. Retry to regenerate the response.";
         patchConversation(active.id, (c) => ({
           ...c,
           messages: c.messages.map((m) =>
-            m.id === pendingId
-              ? { ...m, status: "error", text: "Network error. Retry to regenerate the response." }
-              : m,
+            m.id === pendingId ? { ...m, status: "error", text: message } : m,
           ),
         }));
       } finally {

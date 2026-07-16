@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: forecastiq
+      POSTGRES_PASSWORD: forecastiq
+      POSTGRES_DB: forecastiq
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forecastiq"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://forecastiq:forecastiq@db:5432/forecastiq
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      ENVIRONMENT: production
+      LOG_LEVEL: INFO
+      # CORS: add the production frontend URL here when deploying
+      CORS_ORIGINS: '["http://localhost:3000", "http://localhost:5173"]'
+    volumes:
+      # Mount data/ so new uploads survive restarts without rebuilding the image
+      - ./backend/data:/app/data
+      - backend_logs:/app/logs
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Optional: TanStack Start dev server (comment out if running `npm run dev` separately)
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.frontend
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     VITE_API_URL: http://backend:8000
+  #   depends_on:
+  #     - backend
+
+volumes:
+  pgdata:
+  backend_logs:

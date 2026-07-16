@@ -20,7 +20,12 @@ export const Route = createFileRoute("/budget-simulator")({
   component: BudgetSimulatorPage,
 });
 
-const MAX = 5_000_000;
+// Scaled to this dataset's real spend levels (see INITIAL_BUDGET in
+// src/lib/forecast.ts) — the trained models don't extrapolate well far
+// outside the historical per-channel spend range (tens of thousands, not
+// millions).
+const MAX = 300_000;
+const STEP = 5_000;
 const HORIZONS: Horizon[] = [30, 60, 90];
 const ROWS = [
   { key: "google" as const, label: "Google Ads", hint: "Search · Shopping · PMax", color: "#4285F4" },
@@ -108,10 +113,10 @@ function BudgetSimulatorPage() {
                         <div className="mono text-[9.5px] text-muted-foreground">{row.hint}</div>
                       </div>
                     </div>
-                    {/* ±50k buttons + input */}
+                    {/* ± step buttons + input */}
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => dispatch({ type: "SET_BUDGET", payload: { [row.key]: Math.max(0, value - 50_000) } as any })}
+                        onClick={() => dispatch({ type: "SET_BUDGET", payload: { [row.key]: Math.max(0, value - STEP) } as any })}
                         className="flex h-6 w-6 items-center justify-center rounded-md bg-panel-2 text-muted-foreground hover:text-foreground"
                       >
                         <Minus className="h-3 w-3" />
@@ -120,7 +125,7 @@ function BudgetSimulatorPage() {
                         {formatINR(value)}
                       </span>
                       <button
-                        onClick={() => dispatch({ type: "SET_BUDGET", payload: { [row.key]: Math.min(MAX, value + 50_000) } as any })}
+                        onClick={() => dispatch({ type: "SET_BUDGET", payload: { [row.key]: Math.min(MAX, value + STEP) } as any })}
                         className="flex h-6 w-6 items-center justify-center rounded-md bg-panel-2 text-muted-foreground hover:text-foreground"
                       >
                         <Plus className="h-3 w-3" />
@@ -133,7 +138,7 @@ function BudgetSimulatorPage() {
                     type="range"
                     min={0}
                     max={MAX}
-                    step={10_000}
+                    step={STEP}
                     value={value}
                     onChange={(e) => dispatch({ type: "SET_BUDGET", payload: { [row.key]: Number(e.target.value) } as any })}
                     className="range-forecast h-[3px] w-full cursor-pointer appearance-none rounded-full bg-panel-2 accent-primary"

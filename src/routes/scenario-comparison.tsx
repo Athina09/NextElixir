@@ -21,12 +21,15 @@ interface Scenario {
   horizon: Horizon;
 }
 
+// Scaled to this dataset's real spend levels (see INITIAL_BUDGET in
+// src/lib/forecast.ts) — the trained models don't extrapolate well far
+// outside the historical spend range.
 const SCENARIO_A: Scenario = {
-  budget: { google: 1_800_000, meta: 1_200_000, microsoft: 500_000 },
+  budget: { google: 70_000, meta: 7_500, microsoft: 4_000 },
   horizon: 60,
 };
 const SCENARIO_B: Scenario = {
-  budget: { google: 2_400_000, meta: 900_000, microsoft: 700_000 },
+  budget: { google: 90_000, meta: 5_000, microsoft: 6_000 },
   horizon: 60,
 };
 

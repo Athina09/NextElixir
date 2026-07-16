@@ -3,7 +3,10 @@ import type { Horizon } from "@/lib/forecast";
 import { formatINR } from "@/lib/format";
 import { Minus, Plus } from "lucide-react";
 
-const MAX = 5_000_000;
+// Scaled to this dataset's real spend levels (see INITIAL_BUDGET in
+// src/lib/forecast.ts).
+const MAX = 300_000;
+const STEP = 5_000;
 
 interface Row {
   key: "google" | "meta" | "microsoft";
@@ -74,7 +77,7 @@ export function BudgetSimulator({ compact = false }: { compact?: boolean }) {
                       onClick={() =>
                         dispatch({
                           type: "SET_BUDGET",
-                          payload: { [row.key]: Math.max(0, value - 50_000) } as any,
+                          payload: { [row.key]: Math.max(0, value - STEP) } as any,
                         })
                       }
                       className="hairline-b rounded-sm bg-panel-2 p-1 hover:bg-panel-2/70"
@@ -97,7 +100,7 @@ export function BudgetSimulator({ compact = false }: { compact?: boolean }) {
                       onClick={() =>
                         dispatch({
                           type: "SET_BUDGET",
-                          payload: { [row.key]: Math.min(MAX, value + 50_000) } as any,
+                          payload: { [row.key]: Math.min(MAX, value + STEP) } as any,
                         })
                       }
                       className="hairline-b rounded-sm bg-panel-2 p-1 hover:bg-panel-2/70"
@@ -111,7 +114,7 @@ export function BudgetSimulator({ compact = false }: { compact?: boolean }) {
                     type="range"
                     min={0}
                     max={MAX}
-                    step={10_000}
+                    step={STEP}
                     value={value}
                     onChange={(e) =>
                       dispatch({

@@ -85,17 +85,33 @@ export function ForecastProvider({ children }: { children: ReactNode }) {
     const id = ++runIdRef.current;
     setLoading(true);
     setInsightsLoading(true);
-    predictForecast(state.budget, state.horizon).then((r) => {
-      if (id !== runIdRef.current) return;
-      setForecast(r);
-      setLoading(false);
-      setRunAt(Date.now());
-      generateInsights(r).then((ins) => {
+    predictForecast(state.budget, state.horizon)
+      .then((r) => {
         if (id !== runIdRef.current) return;
-        setInsights(ins);
+        setForecast(r);
+        setLoading(false);
+        setRunAt(Date.now());
+        generateInsights(r)
+          .then((ins) => {
+            if (id !== runIdRef.current) return;
+            setInsights(ins);
+            setInsightsLoading(false);
+          })
+          .catch((err) => {
+            if (id !== runIdRef.current) return;
+            // AI insights are best-effort (e.g. GEMINI_API_KEY not configured yet) —
+            // the forecast itself already rendered, so degrade quietly rather than hang.
+            console.warn("AI insights unavailable:", err instanceof Error ? err.message : err);
+            setInsights(null);
+            setInsightsLoading(false);
+          });
+      })
+      .catch((err) => {
+        if (id !== runIdRef.current) return;
+        console.error("Forecast request failed:", err instanceof Error ? err.message : err);
+        setLoading(false);
         setInsightsLoading(false);
       });
-    });
   }, [state.budget, state.horizon]);
 
   useEffect(() => {

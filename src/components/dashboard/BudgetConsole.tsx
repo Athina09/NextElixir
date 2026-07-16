@@ -6,7 +6,9 @@ import { formatINR } from "@/lib/format";
 import { ChannelLogo } from "@/components/PlatformLogos";
 
 
-const MAX = 5_000_000;
+// Scaled to this dataset's real spend levels (see INITIAL_BUDGET in
+// src/lib/forecast.ts).
+const MAX = 300_000;
 
 interface Row {
   key: "google" | "meta" | "microsoft";
@@ -105,7 +107,7 @@ export function BudgetConsole() {
                   type="range"
                   min={0}
                   max={MAX}
-                  step={10_000}
+                  step={5_000}
                   value={value}
                   onChange={(e) =>
                     dispatch({

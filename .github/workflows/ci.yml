@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Backend: lint + tests + submission validator ─────────────────────────
+  backend:
+    name: Backend — pytest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest (all tests including run.sh end-to-end)
+        env:
+          PYTHONPATH: src
+          # Tests use SQLite in-memory; no real Postgres needed in CI.
+          DATABASE_URL: "sqlite://"
+          # Gemini tests use a fake injected client — no real key required.
+          GEMINI_API_KEY: ""
+        run: |
+          pytest tests/ -v --tb=short -m "not slow or slow"
+
+      - name: Run submission validator
+        env:
+          PYTHONPATH: src
+        run: python scripts/validate_submission.py
+
+  # ── Frontend: typecheck + build ──────────────────────────────────────────
+  frontend:
+    name: Frontend — typecheck + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Build (production bundle)
+        env:
+          # No real backend in CI — build just verifies the TS compiles and
+          # Vite can bundle; the API calls only fire at runtime.
+          VITE_API_URL: http://localhost:8000
+        run: npm run build

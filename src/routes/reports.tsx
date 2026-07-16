@@ -1,42 +1,73 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageContainer } from "@/components/AppLayout";
 import { InsightsPanel } from "@/components/InsightsPanel";
 import { useForecast } from "@/lib/forecast-context";
 import { formatINR, formatMultiple, formatPct } from "@/lib/format";
-import { FileText, FileSpreadsheet, FileDown, Sparkles, Presentation } from "lucide-react";
+import { FileText, FileSpreadsheet, FileDown, Sparkles, Loader2 } from "lucide-react";
 import { NetElixirLogo } from "@/components/PlatformLogos";
+import { downloadReport, type ReportFormat, type ReportType } from "@/lib/api/reports";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({
     meta: [
       { title: "Reports · ForecastIQ" },
-      { name: "description", content: "Generate executive, forecast, campaign, and budget reports." },
+      {
+        name: "description",
+        content: "Generate executive, forecast, campaign, and budget reports.",
+      },
     ],
   }),
   component: ReportsPage,
 });
 
-const REPORTS = [
+const REPORTS: { title: string; type: ReportType; desc: string }[] = [
   {
     title: "Executive Report",
+    type: "executive",
     desc: "One-page summary for leadership with forecast, ROAS, risk flags, and recommendations.",
   },
   {
     title: "Forecast Report",
+    type: "forecast",
     desc: "Full probabilistic forecast with confidence bands, distribution, and drill-down tables.",
   },
   {
     title: "Campaign Report",
+    type: "campaign",
     desc: "Campaign-level efficiency, contribution, and confidence intervals.",
   },
   {
     title: "Budget Report",
+    type: "budget",
     desc: "Budget allocation vs. forecasted revenue and marginal ROAS analysis.",
   },
 ];
 
+const FORMATS: { format: ReportFormat; label: string; icon: typeof FileDown }[] = [
+  { format: "pdf", label: "Export PDF", icon: FileDown },
+  { format: "excel", label: "Excel", icon: FileSpreadsheet },
+  { format: "csv", label: "CSV", icon: FileText },
+];
+
 function ReportsPage() {
-  const { forecast } = useForecast();
+  const { forecast, state } = useForecast();
+  const [pending, setPending] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleExport(type: ReportType, format: ReportFormat) {
+    const key = `${type}-${format}`;
+    setPending(key);
+    setError(null);
+    try {
+      await downloadReport(type, format, state.horizon, state.budget);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Report generation failed.");
+    } finally {
+      setPending(null);
+    }
+  }
+
   return (
     <PageContainer
       title="Reports"
@@ -53,22 +84,34 @@ function ReportsPage() {
               <FileText className="h-4 w-4 text-primary" />
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              <button className="mono flex items-center gap-1.5 rounded-md gradient-primary px-2.5 py-1.5 text-[11px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90">
-                <FileDown className="h-3 w-3" /> Export PDF
-              </button>
-              <button className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2">
-                <FileSpreadsheet className="h-3 w-3" /> Excel
-              </button>
-              <button className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2">
-                <FileText className="h-3 w-3" /> CSV
-              </button>
-              <button className="mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2">
-                <Presentation className="h-3 w-3" /> PPT
-              </button>
+              {FORMATS.map(({ format, label, icon: Icon }, i) => {
+                const key = `${r.type}-${format}`;
+                const isPending = pending === key;
+                return (
+                  <button
+                    key={format}
+                    onClick={() => handleExport(r.type, format)}
+                    disabled={pending !== null}
+                    className={
+                      i === 0
+                        ? "mono flex items-center gap-1.5 rounded-md gradient-primary px-2.5 py-1.5 text-[11px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:opacity-60"
+                        : "mono hairline-b flex items-center gap-1.5 rounded-sm bg-panel-2/60 px-2.5 py-1.5 text-[11px] hover:bg-panel-2 disabled:opacity-60"
+                    }
+                  >
+                    {isPending ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Icon className="h-3 w-3" />
+                    )}
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         ))}
       </div>
+      {error ? <div className="mono mt-2 text-[11px] text-error">{error}</div> : null}
 
       <div className="mt-3 grid gap-3 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div className="panel p-4">

@@ -1,0 +1,40 @@
+{
+  "total_rows": 25562,
+  "is_blocking": false,
+  "error_count": 0,
+  "warning_count": 2,
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "budget_mismatch",
+      "message": "7423 rows spend more than 150% of the stated daily budget.",
+      "affected_rows": 7423,
+      "sample_campaign_ids": [
+        "14459556872",
+        "18253990962",
+        "18259733009",
+        "19902093803",
+        "20437094522"
+      ]
+    },
+    {
+      "severity": "info",
+      "code": "missing_conversions_expected",
+      "message": "3417 rows have no true conversion-count field \u2014 expected for channels whose export only provides a revenue proxy (see 'is_revenue_estimated').",
+      "affected_rows": 3417,
+      "sample_campaign_ids": []
+    },
+    {
+      "severity": "warning",
+      "code": "campaign_naming_inconsistency",
+      "message": "4 campaign(s) mix space and underscore delimiters in their name (e.g. \"Demand Gen_NTM_Campaign\").",
+      "affected_rows": 434,
+      "sample_campaign_ids": [
+        "22819091664",
+        "22819175439",
+        "570837630",
+        "570837631"
+      ]
+    }
+  ]
+}

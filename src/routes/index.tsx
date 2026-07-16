@@ -52,7 +52,36 @@ function SectionHead({
 }
 
 function DashboardPage() {
-  const { forecast, refresh } = useForecast();
+  const { forecast, refresh, state } = useForecast();
+
+  const handleExport = async () => {
+    if (!forecast) return;
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+      const res = await fetch(`${apiUrl}/reports`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          report_type: "executive",
+          format: "pdf",
+          horizon: state.horizon,
+          budget: state.budget,
+        }),
+      });
+      if (!res.ok) throw new Error("Export failed");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `executive-report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-[1600px] px-4 py-6 pb-24 md:px-6 md:pb-24">
@@ -73,7 +102,9 @@ function DashboardPage() {
           >
             <RefreshCw className="h-3 w-3" /> Re-run model
           </button>
-          <button className="mono flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
+          <button 
+            onClick={handleExport}
+            className="mono flex items-center gap-1.5 rounded-md gradient-primary px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
             <Download className="h-3 w-3" /> Export report
           </button>
         </div>
