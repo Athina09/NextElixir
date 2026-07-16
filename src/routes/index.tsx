@@ -12,6 +12,7 @@ import {
   formatPct,
   formatNumber,
 } from "@/lib/format";
+import { MODEL_METRICS, formatMape } from "@/lib/model-metrics";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -155,8 +156,9 @@ function DashboardPage() {
             },
             {
               label: "Model MAPE",
-              value: "6.6%",
-              sub: "backtest 90D · v4.2.1",
+              value: formatMape(MODEL_METRICS.revenue.mape),
+              tone: "warning" as const,
+              sub: `revenue · holdout n=${MODEL_METRICS.testRows}`,
               icon: <Cpu className="h-3 w-3" />,
             },
           ]}

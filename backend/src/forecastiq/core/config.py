@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     forecast_horizons: tuple[int, ...] = (30, 60, 90)
 
     # CORS for the TanStack Start dev/prod origins.
-    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:5173"]
+    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:5173", "http://localhost:8080"]
 
 
 @lru_cache

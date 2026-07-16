@@ -1,6 +1,5 @@
-import { Bell, Search, ChevronDown, Database, Menu } from "lucide-react";
+import { Bell, Search, Menu } from "lucide-react";
 import { useForecast } from "@/lib/forecast-context";
-import { ShopifyLogo } from "@/components/PlatformLogos";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
@@ -26,7 +25,10 @@ export function Topbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
         </div>
       </div>
       <div className="hidden items-center gap-2 md:flex">
-
+        <div className="hidden items-center gap-1.5 rounded-md border border-primary/20 bg-primary/5 px-2.5 py-1.5 lg:flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_8px_var(--success)]" />
+          <span className="mono text-[10px] uppercase tracking-[0.14em] text-primary">ForecastIQ live</span>
+        </div>
         <div className="rounded-md border border-border bg-panel-2/60 px-2.5 py-1.5 text-[11px] leading-tight">
           <div className="text-muted-foreground">Last forecast</div>
           <div className="mono">{runTime}</div>

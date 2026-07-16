@@ -18,7 +18,7 @@ export function ChatHeader({ onClose, compact = false }: { onClose?: () => void;
             ForecastIQ AI
           </span>
           <span className="mono rounded-sm bg-primary/15 px-1.5 py-[1px] text-[9px] uppercase tracking-widest text-primary">
-            AI
+            Groq
           </span>
         </div>
         {!compact && (

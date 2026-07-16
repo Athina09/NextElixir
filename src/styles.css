@@ -166,8 +166,11 @@
   body {
     background-color: var(--color-background);
     background-image:
-      radial-gradient(1200px 480px at 12% -10%, rgba(59, 130, 246, 0.12), transparent 60%),
-      radial-gradient(900px 420px at 100% 0%, rgba(34, 211, 238, 0.08), transparent 55%);
+      radial-gradient(1200px 480px at 12% -10%, rgba(59, 130, 246, 0.14), transparent 60%),
+      radial-gradient(900px 420px at 100% 0%, rgba(34, 211, 238, 0.10), transparent 55%),
+      linear-gradient(rgba(148, 171, 209, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 171, 209, 0.035) 1px, transparent 1px);
+    background-size: auto, auto, 48px 48px, 48px 48px;
     background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);

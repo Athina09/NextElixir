@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { NetElixirLogo } from "@/components/PlatformLogos";
+import { MODEL_METRICS, formatMape } from "@/lib/model-metrics";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -302,10 +303,11 @@ function SettingsPage() {
             </div>
             <div className="space-y-2.5">
               {[
-                { label: "MAPE (backtest)",  value: "6.6%",  good: true },
-                { label: "Coverage 90% CI",  value: "91.2%", good: true },
-                { label: "Last retrained",   value: "3d ago", good: true },
-                { label: "Drift detected",   value: "None",   good: true },
+                { label: "Revenue MAPE", value: formatMape(MODEL_METRICS.revenue.mape), good: false },
+                { label: "ROAS MAPE", value: formatMape(MODEL_METRICS.roas.mape), good: false },
+                { label: "Revenue R²", value: MODEL_METRICS.revenue.r2.toFixed(2), good: true },
+                { label: "Holdout rows", value: String(MODEL_METRICS.testRows), good: true },
+                { label: "Last retrained", value: MODEL_METRICS.trainedAt.slice(0, 10), good: true },
               ].map((m) => (
                 <div key={m.label} className="flex items-center justify-between">
                   <span className="text-[11.5px] text-muted-foreground">{m.label}</span>

@@ -8,6 +8,7 @@ import { CampaignTypeTable } from "@/components/CampaignTypeTable";
 import { CampaignPerformanceTable } from "@/components/CampaignPerformanceTable";
 import { useForecast } from "@/lib/forecast-context";
 import { formatINR, formatMultiple, formatPct } from "@/lib/format";
+import { MODEL_METRICS, formatMape } from "@/lib/model-metrics";
 import {
   TrendingUp, Target, ShieldCheck, Activity, BarChart2,
   ArrowUpRight, Layers, Cpu, AlertTriangle,
@@ -148,7 +149,7 @@ function ForecastsPage() {
             { label: "Blended ROAS",  value: forecast ? formatMultiple(roas)         : "—", sub: `${formatMultiple(forecast?.roas.p10 ?? 0)} – ${formatMultiple(forecast?.roas.p90 ?? 0)}`, icon: <Target className="h-3 w-3" />, tone: "default" as const },
             { label: "Marginal ROAS", value: forecast ? formatMultiple(marginalRoas)  : "—", sub: "next ₹1L spend", icon: <BarChart2 className="h-3 w-3" />, tone: "warning" as const },
             { label: "Campaigns",     value: forecast ? String(forecast.campaigns.length) : "—", sub: `${state.horizon}D horizon`, icon: <Layers className="h-3 w-3" />, tone: "default" as const },
-            { label: "Model MAPE",    value: "6.6%", sub: "backtest 90D", icon: <Cpu className="h-3 w-3" />, tone: "success" as const },
+            { label: "Model MAPE",    value: formatMape(MODEL_METRICS.revenue.mape), sub: `revenue holdout · ROAS ${formatMape(MODEL_METRICS.roas.mape)}`, icon: <Cpu className="h-3 w-3" />, tone: "warning" as const },
           ].map((c) => (
             <Chip key={c.label} {...c} />
           ))}

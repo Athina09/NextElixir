@@ -146,12 +146,12 @@ export function Sidebar({
         </nav>
         {!collapsed && (
           <div className="hairline-t p-3">
-            <div className="rounded-lg border border-border bg-panel-2 p-2.5 text-[11px] text-muted-foreground">
+            <div className="rounded-lg border border-border/80 bg-gradient-to-br from-panel-2 to-panel p-2.5 text-[11px] text-muted-foreground">
               <div className="mono text-[10px] uppercase tracking-widest text-gradient-primary">
-                Model v4.2.1
+                LightGBM · v1.0
               </div>
               <div className="mt-0.5 leading-snug">
-                Bayesian hierarchical • MMM+Attribution ensemble
+                Quantile P10/P50/P90 · revenue MAPE 28.4%
               </div>
             </div>
           </div>

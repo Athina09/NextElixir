@@ -35,7 +35,8 @@ No network calls. No database. No interactive prompts. No absolute paths.
 
 ```
 backend/
-├── run.sh                    # grading entry point
+├── run.sh                    # grading entry point (offline predictions.csv)
+├── run.bat / run_api.sh      # full FastAPI dashboard service
 ├── requirements.txt          # pinned deps (Python 3.13)
 ├── README.md                 # this file
 ├── Dockerfile                # FastAPI service container
