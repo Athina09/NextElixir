@@ -10,7 +10,7 @@ from forecastiq.api.routers import chat, forecast, health, history, insights, re
 from forecastiq.core.config import Settings, get_settings
 from forecastiq.core.logging import configure_logging, get_logger
 from forecastiq.db.base import Base, create_engine_from_url, make_session_factory
-from forecastiq.llm.groq_client import GroqClient
+from forecastiq.llm.factory import build_llm_client
 from forecastiq.models.pipeline import ForecastPipeline
 
 
@@ -40,10 +40,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.data_store = DataStore(pipeline, settings.data_dir)
         app.state.settings = settings
 
-        groq_client = GroqClient(api_key=settings.groq_api_key, model=settings.groq_model)
-        if not groq_client.is_configured:
-            logger.warning("GROQ_API_KEY is not set — /insights and /chat will return 503 until it is.")
-        app.state.groq_client = groq_client
+        llm_client = build_llm_client(settings)
+        if not llm_client.is_configured:
+            logger.warning(
+                "No LLM API key set (GROQ_API_KEY or GEMINI_API_KEY) — /insights and /chat will return 503."
+            )
+        elif settings.groq_api_key:
+            logger.info("LLM chat/insights: Groq (%s)", settings.groq_model)
+        else:
+            logger.info("LLM chat/insights: Gemini (%s)", settings.gemini_model)
+        app.state.groq_client = llm_client
 
         yield
 

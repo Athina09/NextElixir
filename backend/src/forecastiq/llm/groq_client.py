@@ -56,7 +56,8 @@ class GroqClient:
     def generate(self, prompt: str, response_schema: type[SchemaT]) -> SchemaT:
         if self._client is None:
             raise GroqNotConfiguredError(
-                "GROQ_API_KEY is not set — configure it in .env before requesting AI insights/chat."
+                "No LLM API key configured — set GROQ_API_KEY or GEMINI_API_KEY "
+                "in .env before requesting AI insights/chat."
             )
 
         response = self._client.chat.completions.create(

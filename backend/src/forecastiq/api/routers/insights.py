@@ -8,6 +8,7 @@ from forecastiq.api.data_store import DataStore
 from forecastiq.api.deps import get_data_store, get_groq_client, get_pipeline
 from forecastiq.data.schema import Channel
 from forecastiq.llm.context import build_context
+from forecastiq.llm.gemini_client import LLMRateLimitError
 from forecastiq.llm.groq_client import GroqClient, GroqNotConfiguredError
 from forecastiq.llm.insights import generate_insights
 from forecastiq.models.pipeline import ForecastPipeline
@@ -58,5 +59,5 @@ def create_insights(
         return generate_insights(groq_client, context)
     except GroqNotConfiguredError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
-    except RateLimitError as exc:
-        raise HTTPException(status_code=429, detail="Groq API rate limit exceeded. Please try again shortly.") from exc
+    except (RateLimitError, LLMRateLimitError) as exc:
+        raise HTTPException(status_code=429, detail=str(exc)) from exc

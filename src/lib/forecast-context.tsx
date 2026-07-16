@@ -83,8 +83,23 @@ export function ForecastProvider({ children }: { children: ReactNode }) {
 
   const execute = useCallback(() => {
     const id = ++runIdRef.current;
+    const totalBudget =
+      state.budget.google + state.budget.meta + state.budget.microsoft;
+
+    // Clear the previous series so the chart remounts empty, then redraws from
+    // scratch when the new response arrives (slider / horizon changes).
+    setForecast(null);
+    setInsights(null);
     setLoading(true);
     setInsightsLoading(true);
+    setRunAt(Date.now());
+
+    if (totalBudget <= 0) {
+      setLoading(false);
+      setInsightsLoading(false);
+      return;
+    }
+
     predictForecast(state.budget, state.horizon)
       .then((r) => {
         if (id !== runIdRef.current) return;

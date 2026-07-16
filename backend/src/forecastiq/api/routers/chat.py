@@ -11,6 +11,7 @@ from forecastiq.data.schema import Channel
 from forecastiq.db.repositories.chat_repository import ChatRepository
 from forecastiq.llm.chat import generate_chat_response
 from forecastiq.llm.context import build_context
+from forecastiq.llm.gemini_client import LLMRateLimitError
 from forecastiq.llm.groq_client import GroqClient, GroqNotConfiguredError
 from forecastiq.models.pipeline import ForecastPipeline
 from forecastiq.schemas.chat import ChatRequestSchema, ChatResponseSchema
@@ -58,8 +59,8 @@ def send_chat_message(
         assistant_payload = generate_chat_response(groq_client, payload.message, context)
     except GroqNotConfiguredError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
-    except RateLimitError as exc:
-        raise HTTPException(status_code=429, detail="Groq API rate limit exceeded. Please try again shortly.") from exc
+    except (RateLimitError, LLMRateLimitError) as exc:
+        raise HTTPException(status_code=429, detail=str(exc)) from exc
 
     repo.add_message(
         session_id=session.id,

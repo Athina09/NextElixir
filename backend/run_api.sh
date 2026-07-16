@@ -16,6 +16,14 @@ export LOG_LEVEL="${LOG_LEVEL:-INFO}"
 export CORS_ORIGINS="${CORS_ORIGINS:-[\"http://localhost:3000\", \"http://localhost:5173\", \"http://localhost:8080\"]}"
 export PYTHONPATH="$SCRIPT_DIR/src"
 
+# Corporate / macOS custom CA (needed for Gemini/Groq HTTPS behind some proxies)
+if [[ -z "${SSL_CERT_FILE:-}" && -f "$HOME/mac-ca.pem" ]]; then
+  export SSL_CERT_FILE="$HOME/mac-ca.pem"
+fi
+if [[ -z "${REQUESTS_CA_BUNDLE:-}" && -n "${SSL_CERT_FILE:-}" ]]; then
+  export REQUESTS_CA_BUNDLE="$SSL_CERT_FILE"
+fi
+
 if [[ ! -d .venv ]]; then
   echo "[run_api.sh] Creating virtualenv..."
   python3.13 -m venv .venv 2>/dev/null || python3 -m venv .venv

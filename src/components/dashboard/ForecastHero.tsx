@@ -48,8 +48,10 @@ function HeroTooltip({ active, payload }: { active?: boolean; payload?: any[] })
  * No card wrapper, only hairline dividers and generous whitespace.
  */
 export function ForecastHero() {
-  const { forecast, loading } = useForecast();
+  const { forecast, loading, runAt, state } = useForecast();
   const [showBand, setShowBand] = useState(true);
+  const totalBudget =
+    state.budget.google + state.budget.meta + state.budget.microsoft;
 
   const bandData = useMemo(
     () =>
@@ -65,6 +67,7 @@ export function ForecastHero() {
   const p90 = forecast?.revenue.p90 ?? 0;
   const growth = forecast?.growth ?? 0;
   const confidence = forecast?.confidence ?? 0;
+  const chartKey = `${runAt}-${forecast?.horizon ?? 0}-${bandData.length}`;
 
   return (
     <section className="panel-elevated flex h-full min-h-[560px] flex-col lg:h-[620px]">
@@ -73,19 +76,26 @@ export function ForecastHero() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
             <div className="mono flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full gradient-primary animate-pulse" />
-              Revenue Forecast · {forecast?.horizon ?? 0}-day horizon
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full gradient-primary ${loading ? "animate-pulse" : ""}`}
+              />
+              Revenue Forecast · {forecast?.horizon ?? state.horizon}-day horizon
+              {loading ? " · regenerating" : ""}
             </div>
             <div
               className={`mono mt-3 font-medium leading-none tracking-tight ${
-                loading && !forecast ? "text-muted-foreground" : "text-foreground"
+                loading || !forecast ? "text-muted-foreground" : "text-foreground"
               }`}
               style={{ fontSize: "clamp(32px, 4.2vw, 52px)" }}
             >
               {forecast ? formatINR(p50) : "—"}
             </div>
             <div className="mono mt-2 text-[11.5px] text-muted-foreground">
-              P50 median · posterior interval {formatPct(confidence, 0)} confidence
+              {totalBudget <= 0
+                ? "Move a budget slider to generate a forecast"
+                : loading
+                  ? "Rebuilding P10 / P50 / P90 from the new allocation…"
+                  : `P50 median · posterior interval ${formatPct(confidence, 0)} confidence`}
             </div>
           </div>
 
@@ -155,15 +165,23 @@ export function ForecastHero() {
 
         {/* The chart — fills remaining panel space */}
         <div className="mt-4 min-h-0 w-full flex-1">
-
-          {loading && !forecast ? (
-            <div className="h-full w-full animate-pulse rounded-sm bg-panel/40" />
+          {loading || !forecast ? (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-sm border border-dashed border-border bg-panel/30">
+              <div
+                className={`h-1 w-32 rounded-full gradient-primary ${loading ? "animate-pulse" : "opacity-40"}`}
+              />
+              <div className="mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                {totalBudget <= 0
+                  ? "Waiting for budget allocation"
+                  : "Regenerating forecast curve"}
+              </div>
+            </div>
           ) : (
             <motion.div
-              key={forecast?.generatedAt}
-              initial={{ opacity: 0.3 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4 }}
+              key={chartKey}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
               className="h-full w-full"
             >
               <ResponsiveContainer>
@@ -211,7 +229,8 @@ export function ForecastHero() {
                       stroke="none"
                       fill="url(#heroBandFill)"
                       isAnimationActive
-                      animationDuration={550}
+                      animationDuration={700}
+                      animationBegin={0}
                     />
                   ) : null}
                   <Line
@@ -221,7 +240,8 @@ export function ForecastHero() {
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive
-                    animationDuration={650}
+                    animationDuration={850}
+                    animationBegin={40}
                   />
                 </ComposedChart>
               </ResponsiveContainer>

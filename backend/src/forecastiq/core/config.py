@@ -35,8 +35,11 @@ class Settings(BaseSettings):
     database_url: str = f"sqlite:///{(BASE_DIR / 'forecastiq_dev.db').as_posix()}"
 
     # LLM (explanation/chat only — never used for prediction).
+    # Prefer Groq when set; otherwise fall back to Google AI Studio (Gemini).
     groq_api_key: str | None = None
     groq_model: str = "llama-3.3-70b-versatile"
+    gemini_api_key: str | None = None
+    gemini_model: str = "gemini-2.0-flash-lite"
 
     # Forecasting.
     forecast_horizons: tuple[int, ...] = (30, 60, 90)

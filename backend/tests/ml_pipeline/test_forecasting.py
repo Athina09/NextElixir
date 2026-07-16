@@ -95,3 +95,33 @@ def test_simulate_budget_changes_forecast_without_retraining(trained):
     assert high["total_budget"] == pytest.approx(600_000.0, rel=1e-6)
     # same models used for both — no fit/train call happens inside simulate_budget
     assert high["revenue"]["p50"] != low["revenue"]["p50"]
+
+
+def test_channel_mix_changes_timeline_shape(trained):
+    """Google-heavy vs Meta-heavy scenarios must not share an identical wave shape."""
+    unified, period_table, encoder, result = trained
+    common = dict(
+        historical_df=unified,
+        historical_period_table=period_table,
+        encoder=encoder,
+        revenue_models=result.revenue_models,
+        roas_models=result.roas_models,
+        horizon_days=30,
+        as_of=AS_OF,
+    )
+    google_heavy = simulate_budget(
+        **common,
+        budget={"google": 250_000.0, "meta": 10_000.0, "microsoft": 10_000.0},
+    )
+    meta_heavy = simulate_budget(
+        **common,
+        budget={"google": 10_000.0, "meta": 250_000.0, "microsoft": 10_000.0},
+    )
+
+    g = [p["p50"] for p in google_heavy["timeline"]]
+    m = [p["p50"] for p in meta_heavy["timeline"]]
+    g_norm = [x / sum(g) for x in g]
+    m_norm = [x / sum(m) for x in m]
+    # Same weekday pattern would make these nearly identical after normalization.
+    assert g_norm != pytest.approx(m_norm, abs=1e-4)
+    assert g.index(max(g)) != m.index(max(m)) or g_norm != pytest.approx(m_norm, abs=1e-3)

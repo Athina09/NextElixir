@@ -211,12 +211,44 @@ def _weekday_seasonality(historical_df: pd.DataFrame, metric: str) -> np.ndarray
     """Real historical weekday averages for `metric`, normalized to a share-of-week
     curve (index 0=Monday .. 6=Sunday). Falls back to a flat curve if there isn't
     enough history to estimate weekday effects."""
+    if historical_df.empty or metric not in historical_df.columns:
+        return np.full(7, 1 / 7)
     by_weekday = historical_df.groupby(historical_df["date"].dt.weekday)[metric].mean()
     by_weekday = by_weekday.reindex(range(7), fill_value=by_weekday.mean() if len(by_weekday) else 1.0)
     total = by_weekday.sum()
     if total <= 0:
         return np.full(7, 1 / 7)
     return (by_weekday / total).to_numpy()
+
+
+def _blended_weekday_seasonality(
+    historical_df: pd.DataFrame,
+    metric: str,
+    channel_weights: dict[str, float] | None,
+) -> np.ndarray:
+    """Blend per-channel weekday curves by the scenario's channel mix.
+
+    Without this, every budget allocation produced the *same* wave shape (only
+    the amplitude changed), because the timeline used one global weekday curve.
+    """
+    if not channel_weights:
+        return _weekday_seasonality(historical_df, metric)
+
+    positive = {ch: w for ch, w in channel_weights.items() if w > 0}
+    weight_sum = sum(positive.values())
+    if weight_sum <= 0:
+        return _weekday_seasonality(historical_df, metric)
+
+    blended = np.zeros(7)
+    for channel, weight in positive.items():
+        subset = historical_df[historical_df["channel"] == channel]
+        curve = _weekday_seasonality(subset if len(subset) >= 14 else historical_df, metric)
+        blended += (weight / weight_sum) * curve
+
+    total = blended.sum()
+    if total <= 0:
+        return _weekday_seasonality(historical_df, metric)
+    return blended / total
 
 
 def build_timeline(
@@ -227,9 +259,11 @@ def build_timeline(
     horizon_days: int,
     as_of: pd.Timestamp,
     historical_df: pd.DataFrame,
+    channel_revenue_weights: dict[str, float] | None = None,
+    channel_spend_weights: dict[str, float] | None = None,
 ) -> list[dict]:
-    revenue_curve = _weekday_seasonality(historical_df, "revenue")
-    spend_curve = _weekday_seasonality(historical_df, "spend")
+    revenue_curve = _blended_weekday_seasonality(historical_df, "revenue", channel_revenue_weights)
+    spend_curve = _blended_weekday_seasonality(historical_df, "spend", channel_spend_weights)
 
     dates = [as_of + pd.Timedelta(days=d) for d in range(horizon_days)]
     revenue_weights = np.array([revenue_curve[d.weekday()] for d in dates])
@@ -294,6 +328,12 @@ def forecast(
     total_spend, agg_p10, agg_p50, agg_p90 = _aggregate_band(predicted)
     confidence = float(_confidence_from_band(np.array([agg_p10]), np.array([agg_p50]), np.array([agg_p90]))[0])
 
+    channels = build_channel_forecasts(predicted, historical_period_table)
+    revenue_weight_total = sum(c["revenue"] for c in channels) or 1.0
+    spend_weight_total = sum(c["spend"] for c in channels) or 1.0
+    channel_revenue_weights = {c["name"]: c["revenue"] / revenue_weight_total for c in channels}
+    channel_spend_weights = {c["name"]: c["spend"] / spend_weight_total for c in channels}
+
     return {
         "horizon_days": horizon_days,
         "total_budget": total_spend,
@@ -305,9 +345,19 @@ def forecast(
         },
         "growth": compute_growth(historical_df, as_of, horizon_days, agg_p50),
         "confidence": confidence,
-        "timeline": build_timeline(agg_p10, agg_p50, agg_p90, total_spend, horizon_days, as_of, historical_df),
+        "timeline": build_timeline(
+            agg_p10,
+            agg_p50,
+            agg_p90,
+            total_spend,
+            horizon_days,
+            as_of,
+            historical_df,
+            channel_revenue_weights=channel_revenue_weights,
+            channel_spend_weights=channel_spend_weights,
+        ),
         "distribution": build_distribution(agg_p50, agg_p10, agg_p90),
-        "channels": build_channel_forecasts(predicted, historical_period_table),
+        "channels": channels,
         "campaign_types": build_campaign_type_rows(predicted),
         "campaigns": build_campaign_rows(predicted),
         "generated_at": as_of.isoformat(),

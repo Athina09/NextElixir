@@ -43,8 +43,10 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: any[] }
 }
 
 export function ForecastChart() {
-  const { forecast, loading } = useForecast();
+  const { forecast, loading, runAt, state } = useForecast();
   const [showBand, setShowBand] = useState(true);
+  const totalBudget =
+    state.budget.google + state.budget.meta + state.budget.microsoft;
 
   const bandData = useMemo(
     () =>
@@ -55,6 +57,8 @@ export function ForecastChart() {
     [forecast],
   );
 
+  const chartKey = `${runAt}-${forecast?.horizon ?? 0}-${bandData.length}`;
+
   return (
     <div className="panel flex flex-col">
       <div className="hairline-b flex items-center justify-between px-4 py-3">
@@ -63,7 +67,8 @@ export function ForecastChart() {
             Probabilistic Revenue Forecast
           </div>
           <div className="mt-0.5 text-[13px] font-medium">
-            {forecast?.horizon ?? 0}-day projection · P10 / P50 / P90 bands
+            {forecast?.horizon ?? state.horizon}-day projection · P10 / P50 / P90 bands
+            {loading ? " · regenerating" : ""}
           </div>
         </div>
         <div className="flex items-center gap-3 text-[11px]">
@@ -87,14 +92,21 @@ export function ForecastChart() {
         </div>
       </div>
       <div className="h-[380px] w-full px-2 pb-2 pt-4">
-        {loading && !forecast ? (
-          <div className="h-full w-full animate-pulse rounded-sm bg-panel-2/40" />
+        {loading || !forecast ? (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded-sm border border-dashed border-border bg-panel-2/30">
+            <div
+              className={`h-1 w-28 rounded-full gradient-primary ${loading ? "animate-pulse" : "opacity-40"}`}
+            />
+            <div className="mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+              {totalBudget <= 0 ? "Waiting for budget allocation" : "Regenerating forecast curve"}
+            </div>
+          </div>
         ) : (
           <motion.div
-            key={forecast?.generatedAt}
-            initial={{ opacity: 0.4 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.35 }}
+            key={chartKey}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
             className="h-full w-full"
           >
             <ResponsiveContainer>
@@ -130,7 +142,8 @@ export function ForecastChart() {
                     stroke="none"
                     fill="url(#bandFill)"
                     isAnimationActive
-                    animationDuration={500}
+                    animationDuration={700}
+                    animationBegin={0}
                   />
                 ) : null}
                 <Line
@@ -140,7 +153,8 @@ export function ForecastChart() {
                   strokeWidth={1.8}
                   dot={false}
                   isAnimationActive
-                  animationDuration={600}
+                  animationDuration={850}
+                  animationBegin={40}
                 />
                 <Line
                   type="monotone"
