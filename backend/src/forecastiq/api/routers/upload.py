@@ -111,17 +111,24 @@ def download_data_quality_report(
     datasets = [DatasetSchema.from_orm_dataset(d).model_dump() for d in DatasetRepository(db).list_recent()]
     generated_at = pd.Timestamp.now().isoformat()
 
-    content = build_data_quality_report_content(validation_report, datasets, generated_at)
+    content = build_data_quality_report_content(
+        validation_report, datasets, generated_at, df=df
+    )
     report_format = ReportFormat(format)
     file_bytes = _REPORT_RENDERERS[report_format](content)
 
     filename = f"data-quality-report.{_REPORT_EXTENSIONS[report_format]}"
-    ReportRepository(db).create(
-        forecast_run_id=None,
-        report_type=ReportType.DATA_QUALITY,
-        format=report_format,
-        file_path=f"streamed:{filename}",
-    )
+    logger = get_logger("api")
+    try:
+        ReportRepository(db).create(
+            forecast_run_id=None,
+            report_type=ReportType.DATA_QUALITY,
+            format=report_format,
+            file_path=f"streamed:{filename}",
+        )
+    except Exception:
+        logger.exception("Failed to persist data-quality report metadata — still returning download")
+        db.rollback()
 
     return Response(
         content=file_bytes,

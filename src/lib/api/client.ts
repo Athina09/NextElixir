@@ -4,14 +4,27 @@ import axios, { type AxiosError } from "axios";
 // error-normalization behavior is consistent everywhere.
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:8000",
-  timeout: 20_000,
+  timeout: 60_000,
 });
 
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<{ detail?: string }>) => {
+  async (error: AxiosError<{ detail?: string }>) => {
+    // Blob downloads (reports) return JSON error bodies as Blobs — decode them
+    // so the UI shows the real message instead of a generic "Network Error".
+    let detail = error.response?.data?.detail;
+    const raw = error.response?.data as unknown;
+    if ((!detail || typeof detail !== "string") && raw instanceof Blob) {
+      try {
+        const text = await raw.text();
+        const parsed = JSON.parse(text) as { detail?: string };
+        detail = parsed.detail;
+      } catch {
+        // keep falling through to axios message
+      }
+    }
     const message =
-      error.response?.data?.detail ??
+      (typeof detail === "string" ? detail : undefined) ??
       error.message ??
       "Request failed — check your connection and try again.";
     return Promise.reject(new Error(message));

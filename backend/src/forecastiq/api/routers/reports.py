@@ -14,6 +14,7 @@ from forecastiq.data.schema import Channel
 from forecastiq.db.models import ReportFormat, ReportType
 from forecastiq.db.repositories.report_repository import ReportRepository
 from forecastiq.llm.context import build_context
+from forecastiq.llm.gemini_client import LLMRateLimitError
 from forecastiq.llm.groq_client import GroqClient, GroqNotConfiguredError
 from forecastiq.llm.insights import generate_insights
 from forecastiq.models.pipeline import ForecastPipeline
@@ -22,6 +23,7 @@ from forecastiq.reports.csv import render_csv
 from forecastiq.reports.excel import render_excel
 from forecastiq.reports.pdf import render_pdf
 from forecastiq.schemas.forecast import BudgetAllocationSchema
+from forecastiq.core.logging import get_logger
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -75,10 +77,8 @@ def create_report(
                 forecast_result, explanation["revenue_drivers"], explanation["roas_drivers"], anomalies, validation_report
             )
             insights = generate_insights(groq_client, context).model_dump()
-        except GroqNotConfiguredError:
-            insights = None
-        except RateLimitError:
-            # Rate limit exceeded — fall back to the non-AI report rather than fail it outright.
+        except (GroqNotConfiguredError, RateLimitError, LLMRateLimitError, Exception):
+            # Rate limit / LLM failure — fall back to the non-AI report rather than fail it.
             insights = None
 
     report_type = ReportType(payload.report_type)
@@ -87,12 +87,17 @@ def create_report(
     file_bytes = _RENDERERS[report_format](content)
 
     filename = f"{report_type.value}-report.{_EXTENSIONS[report_format]}"
-    ReportRepository(db).create(
-        forecast_run_id=None,
-        report_type=report_type,
-        format=report_format,
-        file_path=f"streamed:{filename}",  # not blob-stored — generated on demand and returned directly
-    )
+    logger = get_logger("api")
+    try:
+        ReportRepository(db).create(
+            forecast_run_id=None,
+            report_type=report_type,
+            format=report_format,
+            file_path=f"streamed:{filename}",  # not blob-stored — generated on demand and returned directly
+        )
+    except Exception:
+        logger.exception("Failed to persist report metadata — still returning download")
+        db.rollback()
 
     return Response(
         content=file_bytes,
