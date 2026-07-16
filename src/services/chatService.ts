@@ -1,4 +1,4 @@
-// AI forecasting assistant — backed by the real /chat endpoint (Gemini,
+// AI forecasting assistant — backed by the real /chat endpoint (Groq,
 // grounded in the current forecast/SHAP/anomaly context; see
 // backend/src/forecastiq/api/routers/chat.py). No response is generated
 // client-side anymore.

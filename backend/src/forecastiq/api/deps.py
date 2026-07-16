@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from forecastiq.api.data_store import DataStore
 from forecastiq.core.config import Settings
-from forecastiq.llm.gemini_client import GeminiClient
+from forecastiq.llm.groq_client import GroqClient
 from forecastiq.models.pipeline import ForecastPipeline
 
 
@@ -30,8 +30,8 @@ def get_data_store(request: Request) -> DataStore:
     return request.app.state.data_store
 
 
-def get_gemini_client(request: Request) -> GeminiClient:
-    return request.app.state.gemini_client
+def get_groq_client(request: Request) -> GroqClient:
+    return request.app.state.groq_client
 
 
 def get_db(request: Request) -> Generator[Session, None, None]:

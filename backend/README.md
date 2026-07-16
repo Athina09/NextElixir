@@ -61,7 +61,7 @@ backend/
         ├── features/         # feature engineering
         ├── models/           # pipeline, training, forecasting, anomaly, explainability, simulation
         ├── submission/       # output_schema.py — predictions.csv columns
-        ├── llm/              # Gemini client, insights, chat (not used in run.sh)
+        ├── llm/              # Groq client, insights, chat (not used in run.sh)
         ├── db/               # SQLAlchemy models (not used in run.sh)
         ├── schemas/          # Pydantic API schemas (not used in run.sh)
         ├── api/              # FastAPI routers (not used in run.sh)
@@ -117,13 +117,16 @@ and runs `forecast()` with no retraining. This is valid because `spend` is a fea
 has never seen labelled with its own outcome for that hypothetical value — the model generalises
 from training-time (spend → revenue) correlations.
 
-### AI narration (Gemini)
+### AI narration (Groq)
 
-Gemini is used **only** for causal narrative and anomaly explanation — it never predicts a number.
-Every prompt explicitly provides the ML pipeline's pre-computed numbers in a JSON context block
-and instructs the model to cite only those numbers. The `run.sh` path is entirely free of Gemini
-calls; the FastAPI `/insights` and `/chat` endpoints surface a clear HTTP 503 if
-`GEMINI_API_KEY` is not set.
+Groq (fast open-model inference — `llama-3.3-70b-versatile` by default) is used **only** for
+causal narrative and anomaly explanation — it never predicts a number. Every prompt explicitly
+provides the ML pipeline's pre-computed numbers in a JSON context block and instructs the model
+to cite only those numbers; structured output is enforced via Groq's JSON mode
+(`response_format={"type": "json_object"}`) plus Pydantic schema validation on the response, so a
+malformed reply fails loudly rather than silently. The `run.sh` path is entirely free of LLM
+calls; the FastAPI `/insights` and `/chat` endpoints surface a clear HTTP 503 if `GROQ_API_KEY` is
+not set, and HTTP 429 if Groq's rate limit is hit.
 
 ---
 
@@ -213,7 +216,7 @@ docker-compose up
 
 # 2. Copy and edit environment config
 cp .env.example .env
-# Set GEMINI_API_KEY= to your key for AI insights/chat
+# Set GROQ_API_KEY= to your key for AI insights/chat
 
 # 3. Start frontend dev server (separate terminal, from repo root)
 npm run dev
@@ -235,9 +238,9 @@ pytest tests/ -v
   CI (Ubuntu). `run.sh` end-to-end tests (marked `@pytest.mark.slow`) actually spawn `bash run.sh`
   as a subprocess and check the real output file — they require `bash` on PATH, standard on Linux
   and Git Bash on Windows. Run `pytest -m "not slow"` for a faster ~30s pass during iteration.
-- No Gemini API key is required to run the tests; LLM tests use an injected fake SDK client — see
-  `tests/integration/test_gemini_client.py` and `tests/api/test_insights.py` /
-  `tests/api/test_chat.py`. Tests always run with `gemini_api_key=None` explicitly set, regardless
+- No Groq API key is required to run the tests; LLM tests use an injected fake SDK client — see
+  `tests/integration/test_groq_client.py` and `tests/api/test_insights.py` /
+  `tests/api/test_chat.py`. Tests always run with `groq_api_key=None` explicitly set, regardless
   of a real key in the developer's local `.env` (see `tests/api/conftest.py`).
 
 ---

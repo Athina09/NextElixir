@@ -4,16 +4,17 @@ from typing import Literal
 
 import pandas as pd
 from fastapi import APIRouter, Depends, Response
+from groq import RateLimitError
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from forecastiq.api.data_store import DataStore
-from forecastiq.api.deps import get_data_store, get_db, get_gemini_client, get_pipeline
+from forecastiq.api.deps import get_data_store, get_db, get_groq_client, get_pipeline
 from forecastiq.data.schema import Channel
 from forecastiq.db.models import ReportFormat, ReportType
 from forecastiq.db.repositories.report_repository import ReportRepository
 from forecastiq.llm.context import build_context
-from forecastiq.llm.gemini_client import GeminiClient, GeminiNotConfiguredError
+from forecastiq.llm.groq_client import GroqClient, GroqNotConfiguredError
 from forecastiq.llm.insights import generate_insights
 from forecastiq.models.pipeline import ForecastPipeline
 from forecastiq.reports.content import build_report_content
@@ -51,7 +52,7 @@ def create_report(
     payload: ReportRequestSchema,
     pipeline: ForecastPipeline = Depends(get_pipeline),
     data_store: DataStore = Depends(get_data_store),
-    gemini_client: GeminiClient = Depends(get_gemini_client),
+    groq_client: GroqClient = Depends(get_groq_client),
     db: Session = Depends(get_db),
 ) -> Response:
     df = data_store.get()
@@ -62,10 +63,10 @@ def create_report(
         df, horizon_days=payload.horizon, as_of=as_of, budget_overrides=budget_overrides
     )
 
-    # AI summary is best-effort: a report must still generate if Gemini isn't
+    # AI summary is best-effort: a report must still generate if Groq isn't
     # configured — content.py falls back to a real, data-grounded summary sentence.
     insights = None
-    if gemini_client.is_configured:
+    if groq_client.is_configured:
         try:
             explanation = pipeline.explain(df, top_n=5)
             anomalies = pipeline.detect_anomalies(df)
@@ -73,15 +74,12 @@ def create_report(
             context = build_context(
                 forecast_result, explanation["revenue_drivers"], explanation["roas_drivers"], anomalies, validation_report
             )
-            insights = generate_insights(gemini_client, context).model_dump()
-        except GeminiNotConfiguredError:
+            insights = generate_insights(groq_client, context).model_dump()
+        except GroqNotConfiguredError:
             insights = None
-        except Exception as exc:
-            if "429" in str(exc) or "RESOURCE_EXHAUSTED" in str(exc):
-                # Quota exceeded, fall back to non-AI report
-                insights = None
-            else:
-                raise
+        except RateLimitError:
+            # Rate limit exceeded — fall back to the non-AI report rather than fail it outright.
+            insights = None
 
     report_type = ReportType(payload.report_type)
     report_format = ReportFormat(payload.format)

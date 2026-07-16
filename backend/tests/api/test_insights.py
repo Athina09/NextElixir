@@ -1,12 +1,12 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from forecastiq.api.deps import get_gemini_client
+from forecastiq.api.deps import get_groq_client
 from forecastiq.api.main import create_app
 from forecastiq.schemas.insights import InsightsSchema
 
 
-class _FakeGeminiClient:
+class _FakeGroqClient:
     def __init__(self, response):
         self._response = response
 
@@ -35,7 +35,7 @@ def _sample_insights() -> InsightsSchema:
 @pytest.fixture
 def insights_client(app_settings):
     app = create_app(app_settings)
-    app.dependency_overrides[get_gemini_client] = lambda: _FakeGeminiClient(_sample_insights())
+    app.dependency_overrides[get_groq_client] = lambda: _FakeGroqClient(_sample_insights())
     with TestClient(app) as c:
         yield c
 

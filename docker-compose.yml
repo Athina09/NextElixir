@@ -28,8 +28,8 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql+psycopg2://forecastiq:forecastiq@db:5432/forecastiq
-      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
       ENVIRONMENT: production
       LOG_LEVEL: INFO
       # CORS: add the production frontend URL here when deploying

@@ -75,7 +75,7 @@ def _campaign_table(forecast: dict) -> TableSection:
 
 
 def _fallback_summary(forecast: dict) -> str:
-    """Used only when Gemini isn't configured — a real, data-grounded sentence,
+    """Used only when Groq isn't configured — a real, data-grounded sentence,
     not a fabricated AI narrative."""
     return (
         f"Over the next {forecast['horizon_days']} days, projected revenue is "
@@ -97,7 +97,7 @@ def build_report_content(report_type: ReportType, forecast: dict, insights: dict
                 TextSection("Recommendations", "\n".join(f"- {r}" for r in insights["recommendations"]) or "None.")
             )
         else:
-            sections.append(TextSection("AI summary", "AI insights unavailable — GEMINI_API_KEY is not configured."))
+            sections.append(TextSection("AI summary", "AI insights unavailable — GROQ_API_KEY is not configured."))
 
     elif report_type == ReportType.FORECAST:
         sections.append(_forecast_band_table(forecast))
@@ -117,3 +117,44 @@ def build_report_content(report_type: ReportType, forecast: dict, insights: dict
         generated_at=forecast["generated_at"],
         sections=sections,
     )
+
+
+def build_data_quality_report_content(
+    validation_report: dict, datasets: list[dict], generated_at: str
+) -> ReportContent:
+    """The Upload Data page's downloadable report — same shared TextSection/
+    TableSection/renderers as the forecast-driven reports above, but built
+    from the current validation state + dataset history instead of a
+    forecast (uploads have no horizon/budget context)."""
+    sections: list[TextSection | TableSection] = [
+        TextSection(
+            "Summary",
+            f"{validation_report['total_rows']:,} rows across {len(datasets)} tracked upload(s). "
+            f"{validation_report['error_count']} error(s), {validation_report['warning_count']} warning(s).",
+        )
+    ]
+
+    if datasets:
+        sections.append(
+            TableSection(
+                title="Uploaded datasets",
+                columns=["Filename", "Channel", "Rows", "Uploaded at"],
+                rows=[[d["filename"], d["channel"] or "Unknown", d["row_count"], d["uploaded_at"]] for d in datasets],
+            )
+        )
+
+    if validation_report["issues"]:
+        sections.append(
+            TableSection(
+                title="Validation issues",
+                columns=["Severity", "Code", "Message", "Affected rows"],
+                rows=[
+                    [i["severity"], i["code"], i["message"], i["affected_rows"]]
+                    for i in validation_report["issues"]
+                ],
+            )
+        )
+    else:
+        sections.append(TextSection("Validation issues", "No data-quality issues found."))
+
+    return ReportContent(title="Data Quality Report", generated_at=generated_at, sections=sections)

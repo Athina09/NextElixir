@@ -75,6 +75,32 @@ def test_upload_rejects_unrecognized_schema_and_does_not_leave_the_file_behind(u
     assert not (data_dir / "mystery.csv").exists()
 
 
+@pytest.mark.parametrize("report_format,expected_prefix", [("pdf", b"%PDF"), ("csv", b"Data Quality Report")])
+def test_download_data_quality_report(upload_client, report_format, expected_prefix):
+    client, _ = upload_client
+    csv_content = (
+        ",campaign_id,segments_date,metrics_clicks,metrics_conversions,metrics_cost_micros,"
+        "metrics_impressions,metrics_video_views,metrics_conversions_value,"
+        "campaign_advertising_channel_type,campaign_budget_amount,campaign_name\n"
+        "0,999996,2026-06-10,5,1.0,3000000,50,0,25.0,SEARCH,15.0,Search_Extra_Campaign_4\n"
+    )
+    client.post("/datasets/upload", files={"file": ("extra_google_4.csv", csv_content, "text/csv")})
+
+    response = client.get(f"/datasets/report?format={report_format}")
+
+    assert response.status_code == 200
+    assert response.content.startswith(expected_prefix)
+    assert "attachment" in response.headers["content-disposition"]
+
+
+def test_download_data_quality_report_excel(upload_client):
+    client, _ = upload_client
+    response = client.get("/datasets/report?format=excel")
+    assert response.status_code == 200
+    assert "spreadsheetml" in response.headers["content-type"]
+    assert len(response.content) > 0
+
+
 def test_upload_reflects_immediately_in_forecast_without_retraining(upload_client):
     client, data_dir = upload_client
     csv_content = (

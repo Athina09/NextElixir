@@ -2,14 +2,33 @@ import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PageContainer } from "@/components/AppLayout";
-import { UploadCloud, FileCheck2, AlertTriangle, CheckCircle2, X, Info } from "lucide-react";
+import {
+  UploadCloud,
+  FileCheck2,
+  AlertTriangle,
+  CheckCircle2,
+  X,
+  Info,
+  FileDown,
+  FileSpreadsheet,
+  FileText,
+  Loader2,
+} from "lucide-react";
 import { ChannelLogo } from "@/components/PlatformLogos";
 import {
+  downloadDataQualityReport,
   fetchDatasets,
   fetchValidationReport,
   uploadDataset,
+  type DataQualityReportFormat,
   type ValidationIssue,
 } from "@/lib/api/datasets";
+
+const REPORT_FORMATS: { format: DataQualityReportFormat; label: string; icon: typeof FileDown }[] = [
+  { format: "pdf", label: "PDF", icon: FileDown },
+  { format: "excel", label: "Excel", icon: FileSpreadsheet },
+  { format: "csv", label: "CSV", icon: FileText },
+];
 
 export const Route = createFileRoute("/upload")({
   head: () => ({
@@ -42,6 +61,8 @@ function UploadPage() {
   const queryClient = useQueryClient();
   const [drag, setDrag] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [downloadingFormat, setDownloadingFormat] = useState<DataQualityReportFormat | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const datasetsQuery = useQuery({ queryKey: ["datasets"], queryFn: fetchDatasets });
@@ -66,6 +87,18 @@ function UploadPage() {
       return;
     }
     uploadMutation.mutate(file);
+  }
+
+  async function handleDownloadReport(format: DataQualityReportFormat) {
+    setDownloadingFormat(format);
+    setReportError(null);
+    try {
+      await downloadDataQualityReport(format);
+    } catch (err) {
+      setReportError(err instanceof Error ? err.message : "Report download failed.");
+    } finally {
+      setDownloadingFormat(null);
+    }
   }
 
   const report = validationQuery.data;
@@ -124,10 +157,33 @@ function UploadPage() {
         </div>
 
         <div className="panel p-4">
-          <div className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Data validation
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <div className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                Data validation
+              </div>
+              <div className="mt-1 text-[13px] font-medium">Automated schema & integrity checks</div>
+            </div>
+            <div className="flex shrink-0 gap-1">
+              {REPORT_FORMATS.map(({ format, label, icon: Icon }) => (
+                <button
+                  key={format}
+                  onClick={() => handleDownloadReport(format)}
+                  disabled={downloadingFormat !== null}
+                  title={`Download report as ${label}`}
+                  className="mono hairline-b flex items-center gap-1 rounded-sm bg-panel-2/60 px-1.5 py-1 text-[10px] hover:bg-panel-2 disabled:opacity-60"
+                >
+                  {downloadingFormat === format ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Icon className="h-3 w-3" />
+                  )}
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="mt-1 text-[13px] font-medium">Automated schema & integrity checks</div>
+          {reportError ? <div className="mono mt-2 text-[11px] text-error">{reportError}</div> : null}
           {validationQuery.isLoading ? (
             <div className="mono mt-3 text-[11.5px] text-muted-foreground">Loading…</div>
           ) : validationQuery.isError ? (

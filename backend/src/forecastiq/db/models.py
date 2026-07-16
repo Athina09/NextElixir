@@ -27,6 +27,7 @@ class ReportType(str, enum.Enum):
     FORECAST = "forecast"
     CAMPAIGN = "campaign"
     BUDGET = "budget"
+    DATA_QUALITY = "data_quality"
 
 
 class ReportFormat(str, enum.Enum):

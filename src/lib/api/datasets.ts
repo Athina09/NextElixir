@@ -49,3 +49,25 @@ export async function uploadDataset(file: File): Promise<DatasetUploadResponse> 
   });
   return response.data;
 }
+
+export type DataQualityReportFormat = "pdf" | "csv" | "excel";
+
+/** Downloads the validation panel + ingested-files list as a file — reuses the
+ * same /reports rendering pipeline as the Reports page, scoped to the
+ * current upload/validation state rather than a forecast. */
+export async function downloadDataQualityReport(format: DataQualityReportFormat): Promise<void> {
+  const response = await apiClient.get("/datasets/report", {
+    params: { format },
+    responseType: "blob",
+  });
+
+  const extension = format === "excel" ? "xlsx" : format;
+  const url = URL.createObjectURL(response.data as Blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `data-quality-report.${extension}`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}

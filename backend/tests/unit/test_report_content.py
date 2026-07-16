@@ -1,5 +1,10 @@
 from forecastiq.db.models import ReportType
-from forecastiq.reports.content import TableSection, TextSection, build_report_content
+from forecastiq.reports.content import (
+    TableSection,
+    TextSection,
+    build_data_quality_report_content,
+    build_report_content,
+)
 
 
 def _sample_forecast() -> dict:
@@ -65,3 +70,38 @@ def test_campaign_report_lists_every_campaign():
 def test_budget_report_includes_allocation_advice_when_available():
     content = build_report_content(ReportType.BUDGET, _sample_forecast(), _sample_insights())
     assert any(isinstance(s, TextSection) and "Shift budget" in s.body for s in content.sections)
+
+
+def test_data_quality_report_lists_datasets_and_issues():
+    validation_report = {
+        "total_rows": 100,
+        "error_count": 1,
+        "warning_count": 1,
+        "issues": [
+            {"severity": "error", "code": "negative_spend", "message": "1 row has negative spend.", "affected_rows": 1},
+            {"severity": "warning", "code": "missing_campaign_type", "message": "2 rows missing type.", "affected_rows": 2},
+        ],
+    }
+    datasets = [
+        {"filename": "google.csv", "channel": "Google Ads", "row_count": 60, "uploaded_at": "2026-07-16T00:00:00"},
+        {"filename": "meta.csv", "channel": None, "row_count": 40, "uploaded_at": "2026-07-16T00:01:00"},
+    ]
+
+    content = build_data_quality_report_content(validation_report, datasets, "2026-07-16T00:02:00")
+
+    assert content.title == "Data Quality Report"
+    dataset_table = next(s for s in content.sections if isinstance(s, TableSection) and s.title == "Uploaded datasets")
+    assert len(dataset_table.rows) == 2
+    assert dataset_table.rows[1][1] == "Unknown"  # None channel rendered as "Unknown"
+
+    issues_table = next(s for s in content.sections if isinstance(s, TableSection) and s.title == "Validation issues")
+    assert len(issues_table.rows) == 2
+
+
+def test_data_quality_report_with_no_issues_says_so():
+    validation_report = {"total_rows": 10, "error_count": 0, "warning_count": 0, "issues": []}
+    content = build_data_quality_report_content(validation_report, [], "2026-07-16T00:00:00")
+    assert any(
+        isinstance(s, TextSection) and s.title == "Validation issues" and "No data-quality issues" in s.body
+        for s in content.sections
+    )

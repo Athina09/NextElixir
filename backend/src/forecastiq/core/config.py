@@ -33,8 +33,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg2://forecastiq:forecastiq@localhost:5432/forecastiq"
 
     # LLM (explanation/chat only — never used for prediction).
-    gemini_api_key: str | None = None
-    gemini_model: str = "gemini-2.5-flash"
+    groq_api_key: str | None = None
+    groq_model: str = "llama-3.3-70b-versatile"
 
     # Forecasting.
     forecast_horizons: tuple[int, ...] = (30, 60, 90)

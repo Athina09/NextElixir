@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import pandas as pd
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -12,12 +13,26 @@ from forecastiq.api.deps import get_app_settings, get_data_store, get_db, get_pi
 from forecastiq.core.config import Settings
 from forecastiq.core.logging import get_logger
 from forecastiq.data.ingestion import UnrecognizedPlatformError, detect_channel
+from forecastiq.db.models import ReportFormat, ReportType
 from forecastiq.db.repositories.dataset_repository import DatasetRepository
+from forecastiq.db.repositories.report_repository import ReportRepository
 from forecastiq.models.pipeline import ForecastPipeline
+from forecastiq.reports.content import build_data_quality_report_content
+from forecastiq.reports.csv import render_csv
+from forecastiq.reports.excel import render_excel
+from forecastiq.reports.pdf import render_pdf
 from forecastiq.schemas.dataset import DatasetSchema
 from forecastiq.schemas.validation import ValidationReportSchema
 
 router = APIRouter(prefix="/datasets", tags=["datasets"])
+
+_REPORT_MEDIA_TYPES = {
+    ReportFormat.PDF: "application/pdf",
+    ReportFormat.CSV: "text/csv",
+    ReportFormat.EXCEL: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+}
+_REPORT_EXTENSIONS = {ReportFormat.PDF: "pdf", ReportFormat.CSV: "csv", ReportFormat.EXCEL: "xlsx"}
+_REPORT_RENDERERS = {ReportFormat.PDF: render_pdf, ReportFormat.CSV: render_csv, ReportFormat.EXCEL: render_excel}
 
 
 class DatasetUploadResponseSchema(BaseModel):
@@ -77,4 +92,39 @@ async def upload_dataset(
     return DatasetUploadResponseSchema(
         dataset=DatasetSchema.from_orm_dataset(dataset),
         validation=ValidationReportSchema(**report.to_dict()),
+    )
+
+
+@router.get("/report")
+def download_data_quality_report(
+    format: Literal["pdf", "csv", "excel"] = "pdf",
+    pipeline: ForecastPipeline = Depends(get_pipeline),
+    data_store: DataStore = Depends(get_data_store),
+    db: Session = Depends(get_db),
+) -> Response:
+    """Downloadable export of the validation panel + ingested-files list already
+    shown on the Upload Data page — reuses the same report renderers as
+    /reports (see forecastiq/reports/), just built from validation state
+    instead of a forecast."""
+    df = data_store.get()
+    validation_report = pipeline.validate(df).to_dict()
+    datasets = [DatasetSchema.from_orm_dataset(d).model_dump() for d in DatasetRepository(db).list_recent()]
+    generated_at = pd.Timestamp.now().isoformat()
+
+    content = build_data_quality_report_content(validation_report, datasets, generated_at)
+    report_format = ReportFormat(format)
+    file_bytes = _REPORT_RENDERERS[report_format](content)
+
+    filename = f"data-quality-report.{_REPORT_EXTENSIONS[report_format]}"
+    ReportRepository(db).create(
+        forecast_run_id=None,
+        report_type=ReportType.DATA_QUALITY,
+        format=report_format,
+        file_path=f"streamed:{filename}",
+    )
+
+    return Response(
+        content=file_bytes,
+        media_type=_REPORT_MEDIA_TYPES[report_format],
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
     )

@@ -98,7 +98,7 @@ export async function predictForecast(
  * (see backend/src/forecastiq/api/routers/insights.py). The AI never predicts
  * — it explains a forecast the backend recomputes server-side from the same
  * budget/horizon carried on `result` (never a client-supplied forecast blob).
- * Throws if GEMINI_API_KEY isn't configured server-side (503); callers should
+ * Throws if GROQ_API_KEY isn't configured server-side (503); callers should
  * treat that as "insights unavailable", not retry it away. */
 export async function generateInsights(result: ForecastResult): Promise<Insights> {
   const spendFor = (name: Channel) => result.channels.find((c) => c.name === name)?.spend ?? 0;

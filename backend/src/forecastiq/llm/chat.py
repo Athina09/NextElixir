@@ -8,7 +8,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from forecastiq.llm.gemini_client import GeminiClient
+from forecastiq.llm.groq_client import GroqClient
 from forecastiq.schemas.chat import AssistantPayloadSchema
 
 INSTRUCTIONS = """You are ForecastIQ's AI forecasting assistant, embedded in a live \
@@ -31,7 +31,7 @@ figures from the context.
 """
 
 
-def generate_chat_response(client: GeminiClient, user_message: str, context: dict[str, Any]) -> AssistantPayloadSchema:
+def generate_chat_response(client: GroqClient, user_message: str, context: dict[str, Any]) -> AssistantPayloadSchema:
     prompt = (
         f"{INSTRUCTIONS}\n\nContext (JSON):\n{json.dumps(context, default=str)}"
         f"\n\nUser question: {user_message}"

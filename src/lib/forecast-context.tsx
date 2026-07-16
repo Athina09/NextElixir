@@ -99,7 +99,7 @@ export function ForecastProvider({ children }: { children: ReactNode }) {
           })
           .catch((err) => {
             if (id !== runIdRef.current) return;
-            // AI insights are best-effort (e.g. GEMINI_API_KEY not configured yet) —
+            // AI insights are best-effort (e.g. GROQ_API_KEY not configured yet) —
             // the forecast itself already rendered, so degrade quietly rather than hang.
             console.warn("AI insights unavailable:", err instanceof Error ? err.message : err);
             setInsights(null);

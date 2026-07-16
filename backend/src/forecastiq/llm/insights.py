@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from forecastiq.llm.gemini_client import GeminiClient
+from forecastiq.llm.groq_client import GroqClient
 from forecastiq.schemas.insights import InsightsSchema
 
 INSTRUCTIONS = """You are ForecastIQ's AI analyst, explaining a probabilistic ecommerce \
@@ -31,6 +31,6 @@ anomaly data given.
 """
 
 
-def generate_insights(client: GeminiClient, context: dict[str, Any]) -> InsightsSchema:
+def generate_insights(client: GroqClient, context: dict[str, Any]) -> InsightsSchema:
     prompt = f"{INSTRUCTIONS}\n\nContext (JSON):\n{json.dumps(context, default=str)}"
     return client.generate(prompt, response_schema=InsightsSchema)

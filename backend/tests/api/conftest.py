@@ -13,10 +13,9 @@ def app_settings(real_data_dir):
         data_dir=real_data_dir,
         model_path=backend_dir / "pickle" / "model.pkl",
         # Explicitly unconfigured regardless of a real key in the developer's local
-        # .env — most API tests (and the "Gemini not configured" tests specifically)
-        # must be deterministic, not dependent on ambient environment state. Tests
-        # that want a real Gemini call opt in explicitly (see test_llm_live.py).
-        gemini_api_key=None,
+        # .env — most API tests (and the "Groq not configured" tests specifically)
+        # must be deterministic, not dependent on ambient environment state.
+        groq_api_key=None,
     )
 
 

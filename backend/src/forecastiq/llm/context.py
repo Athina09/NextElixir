@@ -1,4 +1,4 @@
-"""The one place that assembles what Gemini is allowed to see. Insights and
+"""The one place that assembles what the LLM is allowed to see. Insights and
 chat both build their prompt from this same summary so neither can drift from
 what the other sees, and neither can invent a number this summary doesn't
 contain — "LLM never predicts, only explains" only holds if both call sites

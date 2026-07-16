@@ -7,7 +7,7 @@ FORMATS = ["pdf", "csv", "excel"]
 @pytest.mark.parametrize("report_type", REPORT_TYPES)
 @pytest.mark.parametrize("report_format", FORMATS)
 def test_create_report_every_type_and_format_without_ai(client, report_type, report_format):
-    """No Gemini key is configured for the shared `client` fixture — reports must
+    """No Groq key is configured for the shared `client` fixture — reports must
     still generate using the real, data-grounded fallback summary."""
     response = client.post(
         "/reports",
