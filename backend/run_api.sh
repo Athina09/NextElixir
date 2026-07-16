@@ -8,7 +8,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 PORT="${PORT:-8000}"
-export DATABASE_URL="${DATABASE_URL:-sqlite:///./forecastiq_dev.db}"
+# Prefer absolute SQLite path so history writes work regardless of launch cwd.
+DEFAULT_DB="sqlite:///${SCRIPT_DIR}/forecastiq_dev.db"
+export DATABASE_URL="${DATABASE_URL:-$DEFAULT_DB}"
 export ENVIRONMENT="${ENVIRONMENT:-development}"
 export LOG_LEVEL="${LOG_LEVEL:-INFO}"
 export CORS_ORIGINS="${CORS_ORIGINS:-[\"http://localhost:3000\", \"http://localhost:5173\", \"http://localhost:8080\"]}"

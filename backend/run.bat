@@ -8,7 +8,7 @@ REM Optional env: GROQ_API_KEY, DATABASE_URL, PORT
 cd /d "%~dp0"
 
 if not defined PORT set "PORT=8000"
-if not defined DATABASE_URL set "DATABASE_URL=sqlite:///./forecastiq_dev.db"
+if not defined DATABASE_URL set "DATABASE_URL=sqlite:///%~dp0forecastiq_dev.db"
 if not defined ENVIRONMENT set "ENVIRONMENT=development"
 if not defined LOG_LEVEL set "LOG_LEVEL=INFO"
 if not defined CORS_ORIGINS set "CORS_ORIGINS=[\"http://localhost:3000\", \"http://localhost:5173\", \"http://localhost:8080\"]"

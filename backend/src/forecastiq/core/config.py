@@ -30,7 +30,9 @@ class Settings(BaseSettings):
     log_dir: Path = BASE_DIR / "logs"
 
     # Database (dashboard history/users/reports/chat only — run.sh never touches this).
-    database_url: str = "postgresql+psycopg2://forecastiq:forecastiq@localhost:5432/forecastiq"
+    # Absolute SQLite default avoids cwd-relative "readonly database" failures when
+    # the API is launched from a different working directory.
+    database_url: str = f"sqlite:///{(BASE_DIR / 'forecastiq_dev.db').as_posix()}"
 
     # LLM (explanation/chat only — never used for prediction).
     groq_api_key: str | None = None

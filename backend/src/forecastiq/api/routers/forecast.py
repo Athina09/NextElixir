@@ -50,14 +50,20 @@ def create_forecast(
         result["revenue"]["p50"],
     )
 
-    ForecastRunRepository(db).create(
-        horizon_days=payload.horizon,
-        budget=budget_dict,
-        result=result,
-        revenue_p50=result["revenue"]["p50"],
-        roas_p50=result["roas"]["p50"],
-        confidence=result["confidence"],
-        status=RunStatus.COMPLETED,
-    )
+    # History persistence is best-effort — a readonly/locked SQLite file (or a
+    # missing Postgres) must never blank the dashboard forecast response.
+    try:
+        ForecastRunRepository(db).create(
+            horizon_days=payload.horizon,
+            budget=budget_dict,
+            result=result,
+            revenue_p50=result["revenue"]["p50"],
+            roas_p50=result["roas"]["p50"],
+            confidence=result["confidence"],
+            status=RunStatus.COMPLETED,
+        )
+    except Exception:
+        logger.exception("Failed to persist forecast run — returning forecast without history")
+        db.rollback()
 
     return ForecastResultSchema.from_pipeline_output(result)
