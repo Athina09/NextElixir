@@ -20,7 +20,16 @@ def test_build_context_includes_all_expected_sections():
 
     assert context["horizon_days"] == 30
     assert context["total_budget"] == 100.0
-    assert context["channels"] == [{"name": "Google Ads"}]
+    assert context["channels"] == [
+        {
+            "name": "Google Ads",
+            "spend": None,
+            "revenue": None,
+            "roas": None,
+            "contribution": None,
+            "confidence": None,
+        }
+    ]
     assert context["validation_issue_counts"] == {"errors": 0, "warnings": 1}
     assert context["validation_flags"] == ["test issue"]
 
