@@ -2,13 +2,14 @@
 
 > AI-powered **probabilistic ecommerce revenue forecasting** for digital marketing agencies. Simulate media budgets, forecast ROAS with P10/P50/P90 bands, drill into campaign performance, and get Groq-grounded AI explanations — before committing ad spend.
 
-![ForecastIQ dashboard — KPIs, P10/P50/P90 revenue forecast, and budget scenario planner](docs/screenshots/01-dashboard.jpg)
-
-![Campaign analytics](docs/screenshots/02-campaign-analytics.jpg)
-
-![AI assistant](docs/screenshots/03-ai-assistant.jpg)
-
-![Forecast history](docs/screenshots/04-forecast-history.jpg)
+<p align="center">
+  <img src="docs/screenshots/01-dashboard.jpg" alt="ForecastIQ dashboard" width="49%" />
+  <img src="docs/screenshots/02-campaign-analytics.jpg" alt="Campaign analytics" width="49%" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/03-ai-assistant.jpg" alt="AI assistant" width="49%" />
+  <img src="docs/screenshots/04-forecast-history.jpg" alt="Forecast history" width="49%" />
+</p>
 
 ---
 
