@@ -1,7 +1,14 @@
 # ForecastIQ Backend — AIgnition 3.0
 
-> **NetElixir · AIgnition 3.0 Hackathon Submission**
+> **NetElixir · AIgnition 3.0 Hackathon Submission**  
 > Probabilistic ecommerce revenue forecasting from media budget inputs.
+
+Two entry points:
+
+| Script | Purpose |
+|---|---|
+| [`run.sh`](run.sh) | **Hackathon grading** — offline features → `predictions.csv` (no network / DB / LLM) |
+| [`run.bat`](run.bat) / [`run_api.sh`](run_api.sh) | **Full FastAPI** — dashboard API, upload validation, reports, optional AI chat |
 
 ---
 
@@ -14,6 +21,7 @@ bash run.sh [DATA_DIR] [MODEL_PATH] [OUTPUT_PATH]
 ```
 
 All three arguments are optional and positional. The script:
+
 1. Reads every CSV in `DATA_DIR` (no hardcoded filenames — the grading machine may rename them)
 2. Detects each platform by column signature (Google Ads / Meta Ads / Microsoft/Bing Ads)
 3. Normalises into a unified schema and builds features
@@ -24,10 +32,98 @@ No network calls. No database. No interactive prompts. No absolute paths.
 
 ---
 
+## Quick start (full FastAPI dashboard)
+
+### macOS / Linux
+
+```bash
+bash run_api.sh
+# API: http://localhost:8000  ·  Docs: http://localhost:8000/docs
+```
+
+### Windows
+
+```bat
+run.bat
+```
+
+`run_api.sh` / `run.bat` create `.venv` if needed, install deps, and default `DATABASE_URL` to an **absolute** SQLite path (`…/backend/forecastiq_dev.db`) so forecast-history / report metadata writes work regardless of cwd.
+
+Optional AI chat / insights — copy env and set a key:
+
+```bash
+cp .env.example .env
+# Prefer Groq; Gemini is the fallback when GROQ_API_KEY is empty
+# GROQ_API_KEY=…   GROQ_MODEL=llama-3.1-8b-instant   # free-tier friendly
+# GEMINI_API_KEY=… GEMINI_MODEL=gemini-2.0-flash-lite
+```
+
+| Env | Role |
+|---|---|
+| `GROQ_API_KEY` | Primary LLM for `/chat` and `/insights` |
+| `GEMINI_API_KEY` | Fallback LLM if Groq is unset / unavailable |
+| `DATABASE_URL` | SQLite (default) or Postgres |
+| `CORS_ORIGINS` | Browser origins; in **development**, any `localhost` / `127.0.0.1` port is also allowed |
+
+Without an LLM key, `/chat` and `/insights` return **HTTP 503**. Forecast, upload, validation, simulation, and report **numbers** still work.
+
+**macOS note:** LightGBM needs OpenMP — `brew install libomp` if import fails.  
+**Corporate proxy / custom CA:** if `~/mac-ca.pem` exists, `run_api.sh` sets `SSL_CERT_FILE` for Groq/Gemini HTTPS.
+
+Docker / Postgres (optional):
+
+```bash
+# from repo root
+docker compose up -d db
+# DATABASE_URL=postgresql+psycopg2://forecastiq:forecastiq@localhost:5432/forecastiq
+```
+
+---
+
 ## Requirements
 
-- Python 3.13 (all dependencies pinned in `requirements.txt`)
-- `bash` (standard on the Linux grading machine)
+- Python 3.13 (dependencies pinned in `requirements.txt`)
+- `bash` (Linux grading machine; Git Bash on Windows for `run.sh`)
+
+---
+
+## Model accuracy (committed pickle)
+
+Held-out **time-based 80/20** backtest from `pickle/model.pkl`:
+
+| Target | MAE | RMSE | MAPE | R² |
+|---|---|---|---|---|
+| **Revenue** | 1,404 | 7,756 | **28.4%** | **0.93** |
+| **ROAS** | 1.30 | 7.57 | **32.9%** | 0.23 |
+
+Also exposed at `GET /health` → `revenue_metrics` / `roas_metrics`.
+
+> Displayed ROAS in forecasts is derived as `revenue_quantile / spend` so revenue and ROAS never contradict. The independently trained ROAS model is kept for health metrics only.
+
+---
+
+## Dataset (`data/`)
+
+| File | Rows (approx.) | Notes |
+|---|---|---|
+| `google_ads_campaign_stats.csv` | ~19,272 | Cost in micros → currency; has conversions_value |
+| `meta_ads_campaign_stats.csv` | ~3,417 | `conversion` used as revenue proxy (`is_revenue_estimated`) |
+| `bing_campaign_stats.csv` | ~2,873 | Microsoft Ads |
+
+Ingestion **globs all `*.csv`** and detects platform by column signature — no hardcoded filenames (grading-safe). Extra uploads (e.g. Samsung / Microsoft campaign exports) are accepted the same way via `POST /datasets/upload`.
+
+---
+
+## Reports
+
+Reports share one content builder (`forecastiq/reports/content.py`) and render to PDF / Excel / CSV.
+
+| Source | Endpoint | Contents (high level) |
+|---|---|---|
+| **Upload Data** page | `GET /datasets/report?format=excel\|pdf\|csv` | Data quality: summary KPIs, upload history, coverage by channel/type, daily activity sample, top campaigns, full validation issues + recommended actions |
+| **Reports** page | `POST /reports` | `executive` / `forecast` / `campaign` / `budget` — scenario overview, KPI snapshot, forecast bands, channel & type tables, timeline/distribution samples, campaign ROAS leaders, methodology notes; AI narrative when an LLM key is set |
+
+Excel exports auto-widen columns and wrap long messages so codes are not clipped.
 
 ---
 
@@ -39,6 +135,7 @@ backend/
 ├── run.bat / run_api.sh      # full FastAPI dashboard service
 ├── requirements.txt          # pinned deps (Python 3.13)
 ├── README.md                 # this file
+├── .env.example              # Groq / Gemini / DB / CORS
 ├── Dockerfile                # FastAPI service container
 ├── train.py                  # offline retraining (never run at grading time)
 ├── data/
@@ -62,12 +159,31 @@ backend/
         ├── features/         # feature engineering
         ├── models/           # pipeline, training, forecasting, anomaly, explainability, simulation
         ├── submission/       # output_schema.py — predictions.csv columns
-        ├── llm/              # Groq client, insights, chat (not used in run.sh)
+        ├── llm/              # Groq + Gemini clients, insights, chat (not used in run.sh)
         ├── db/               # SQLAlchemy models (not used in run.sh)
         ├── schemas/          # Pydantic API schemas (not used in run.sh)
         ├── api/              # FastAPI routers (not used in run.sh)
         └── reports/          # PDF/Excel/CSV generation (not used in run.sh)
 ```
+
+---
+
+## API surface (FastAPI)
+
+| Method | Route | Notes |
+|---|---|---|
+| `GET` | `/health` | Model loaded + backtest metrics |
+| `POST` | `/forecast` | Probabilistic forecast (no LLM) |
+| `POST` | `/simulate` | Budget simulation |
+| `POST` | `/chat` | AI assistant (needs Groq or Gemini key) |
+| `POST` | `/insights` | AI narrative (needs key) |
+| `POST` | `/datasets/upload` | CSV ingest |
+| `GET` | `/validation` | Data validation report (JSON) |
+| `GET` | `/datasets/report` | Downloadable data-quality report |
+| `GET/DELETE/POST` | `/forecast-runs…` | History (best-effort persist if SQLite is writable) |
+| `POST` | `/reports` | Executive / forecast / campaign / budget export |
+
+Interactive docs: `http://localhost:8000/docs`.
 
 ---
 
@@ -78,9 +194,9 @@ backend/
 The brief asks for **aggregate-period** probabilistic (P10/P50/P90) revenue and blended ROAS forecasts
 for 30-, 60-, and 90-day horizons, driven by future media budget inputs (Google Ads + Meta Ads +
 Microsoft/Bing Ads). Daily forecasts are *not* required — the dashboard's daily timeline is a derived
-visualisation (the aggregate P10/P50/P90 budget is allocated across days using a fitted
-weekly-seasonal curve; it is not a second model and does not contradict the aggregate-period
-requirement).
+visualisation: the aggregate P10/P50/P90 is allocated across days using a **channel-weighted**
+weekday seasonality curve from history (so changing the budget mix reshapes the curve). It is not a
+second model and does not contradict the aggregate-period requirement.
 
 ### Model architecture
 
@@ -88,9 +204,9 @@ requirement).
 |---|---|---|
 | Target grain | One row per (campaign, period), trained on **30-, 60-, and 90-day buckets combined** | Matches the aggregate-period requirement; training on all three horizons (not just 30) keeps `period_length_days` in-distribution at inference instead of extrapolated — see Assumptions §4 |
 | Model family | **LightGBM quantile regression** (τ = 0.1, 0.5, 0.9) | Three separate quantile-loss models give P10/P50/P90 directly without a separate conformal calibration step; robust with small N |
-| Models trained | Revenue model + ROAS model, each with 3 quantiles (6 total) | Both are trained and evaluated independently (the brief requires forecasting ROAS as its own quantity). The **displayed** ROAS in `/forecast`, `/simulate`, and `predictions.csv` is derived as `revenue_quantile / spend` — guaranteeing revenue and ROAS never contradict each other in the UI. The independently-trained ROAS model's own predictions are retained (`roas_model_p50`) for evaluation/health metrics only, not for display. See `forecastiq/models/forecasting.py`. |
-| Train/test split | **Time-based** (80% train, 20% test, ordered by `period_end`) | Prevents data leakage from future into past; mirrors real deployment where the model sees only historical data |
-| Quantile crossing | Monotonicity enforced row-wise via `np.sort` on stacked quantiles | Independently-trained quantile models can cross on small datasets; sort post-hoc is the standard fix |
+| Models trained | Revenue model + ROAS model, each with 3 quantiles (6 total) | Both are trained and evaluated independently. The **displayed** ROAS in `/forecast`, `/simulate`, and `predictions.csv` is derived as `revenue_quantile / spend` — guaranteeing revenue and ROAS never contradict. The independently trained ROAS model's own predictions are retained for evaluation/health metrics only. See `forecastiq/models/forecasting.py`. |
+| Train/test split | **Time-based** (80% train, 20% test, ordered by `period_end`) | Prevents data leakage from future into past |
+| Quantile crossing | Monotonicity enforced row-wise via `np.sort` on stacked quantiles | Independently trained quantile models can cross on small datasets; sort post-hoc is the standard fix |
 | Anomaly detection | IsolationForest over spend/ROAS/CTR features | Unsupervised; no labelled anomaly data available |
 | Explainability | SHAP values on the P50 revenue/ROAS model | Used for causal narrative in the AI assistant; not used for prediction |
 
@@ -106,10 +222,7 @@ Only inputs knowable *before* a period happens are used:
 | Trailing momentum | Rolling/lag means of revenue and ROAS over the immediately preceding period |
 
 Same-period outcome columns (clicks, impressions, conversions, CTR, CPA) are deliberately excluded —
-they are only known after the period happens and are themselves functions of revenue/spend. Including
-them would leak the target into its own features and make budget simulation invalid (the model would
-have to invent values for these for a hypothetical future budget, introducing a second prediction
-problem inside the first).
+they are only known after the period happens and are themselves functions of revenue/spend.
 
 ### Budget simulation
 
@@ -118,16 +231,18 @@ and runs `forecast()` with no retraining. This is valid because `spend` is a fea
 has never seen labelled with its own outcome for that hypothetical value — the model generalises
 from training-time (spend → revenue) correlations.
 
-### AI narration (Groq)
+### AI narration (Groq / Gemini)
 
-Groq (fast open-model inference — `llama-3.3-70b-versatile` by default) is used **only** for
-causal narrative and anomaly explanation — it never predicts a number. Every prompt explicitly
-provides the ML pipeline's pre-computed numbers in a JSON context block and instructs the model
-to cite only those numbers; structured output is enforced via Groq's JSON mode
-(`response_format={"type": "json_object"}`) plus Pydantic schema validation on the response, so a
-malformed reply fails loudly rather than silently. The `run.sh` path is entirely free of LLM
-calls; the FastAPI `/insights` and `/chat` endpoints surface a clear HTTP 503 if `GROQ_API_KEY` is
-not set, and HTTP 429 if Groq's rate limit is hit.
+LLMs are used **only** for causal narrative and anomaly explanation — they never predict a number.
+Every prompt provides the ML pipeline's pre-computed numbers in a compact JSON context block and
+instructs the model to cite only those numbers; structured JSON output is validated with Pydantic.
+
+- **Primary:** Groq (`GROQ_API_KEY`, default model in `.env.example`)
+- **Fallback:** Google Gemini (`GEMINI_API_KEY`) when Groq is not configured
+- Context is kept compact so free-tier TPM limits are less likely to trip `/chat`
+
+The `run.sh` path is entirely free of LLM calls. FastAPI `/insights` and `/chat` return HTTP 503 if
+no key is set, and surface rate-limit errors when the provider throttles.
 
 ---
 
@@ -136,8 +251,8 @@ not set, and HTTP 429 if Groq's rate limit is hit.
 1. **Revenue proxy for Meta Ads**: Meta's export has no `revenue` column. The `conversion` column
    (decimal, currency-scale values, not integer counts) is used as a revenue proxy. All affected rows
    are flagged `is_revenue_estimated = True` in the unified schema and shown as warnings in the
-   validation report. The model is trained on this proxy; predictions for Meta are therefore estimates
-   of the proxy, not verbatim revenue. This is noted in `ValidationReport.warnings`.
+   validation / data-quality report. The model is trained on this proxy; predictions for Meta are
+   therefore estimates of the proxy, not verbatim revenue.
 
 2. **Campaign type for Meta Ads**: Meta's export has no campaign-type column. All Meta rows receive
    the fixed derived `campaign_type = "Social"` (channel-appropriate; not a guess at an internal
@@ -148,14 +263,10 @@ not set, and HTTP 429 if Groq's rate limit is hit.
 
 4. **Aggregate-period grain**: the model is trained on **30-, 60-, and 90-day period aggregates
    combined into one training table** (`FeatureEngineer.build_training_table`), not just 30-day
-   examples with 60/90 requested only at inference. Earlier in development this pipeline trained
-   on 30-day periods only and derived 60/90-day forecasts by scaling the feature vector — that
-   made `period_length_days` (and the correspondingly scaled spend) out-of-distribution for the
-   tree-based quantile models, which don't extrapolate well: revenue flatlined instead of scaling
-   with a proportionally larger budget (verified during development — 90-day revenue at 3x the
-   30-day spend came out only ~8% higher, collapsing blended ROAS from ~8.7x to ~3.1x). Training on
-   genuine 30/60/90-day examples fixed this (same test: 90-day revenue at 3x spend now comes out
-   ~3.3x higher, ROAS stays ~8x across all three horizons). See
+   examples with 60/90 requested only at inference. Training only on 30-day periods made
+   `period_length_days` (and scaled spend) out-of-distribution for tree-based quantile models —
+   revenue flatlined instead of scaling with budget. Training on genuine 30/60/90-day examples fixed
+   this. See
    `tests/ml_pipeline/test_pipeline.py::test_revenue_scales_with_spend_across_all_three_horizons`
    for the regression guard.
 
@@ -163,9 +274,9 @@ not set, and HTTP 429 if Groq's rate limit is hit.
    band width relative to P50 (narrower band = higher confidence). It is not a calibrated posterior
    probability.
 
-6. **No daily model**: The daily timeline chart in the dashboard allocates the aggregate P50/P10/P90
-   across days using a fitted weekly-seasonal curve. This is clearly documented as a visualisation
-   allocation, not a second predictive model.
+6. **No daily model**: The daily timeline chart allocates the aggregate P50/P10/P90 across days using
+   a fitted weekly-seasonal curve weighted by channel mix. This is a visualisation allocation, not a
+   second predictive model.
 
 ---
 
@@ -182,16 +293,11 @@ not set, and HTTP 429 if Groq's rate limit is hit.
 3. **Multi-horizon training still shares one model per target** (see Assumptions §4): 30/60/90-day
    examples are combined into a single training table rather than training three fully separate
    model sets. This fixed the out-of-distribution flatlining problem and is a reasonable v1
-   trade-off, but three horizon-specific model sets would likely fit each window's dynamics more
-   precisely given more time/data.
+   trade-off.
 
-4. **`predictions.csv` column format**: Neither the AIgnition Project Brief nor the Hackathon
-   Submission Guide states the exact column names/order that were announced at the launch event.
-   The schema in `src/forecastiq/submission/output_schema.py` is a well-justified default
-   (aggregate/channel/campaign-type/campaign P10/P50/P90 revenue + ROAS for all three horizons).
-   **ACTION REQUIRED before July 19**: confirm the official column format from the hackathon portal,
-   email, or Slack — if it differs, update `output_schema.py` (one file, ~30 lines) and re-run
-   `bash run.sh` to regenerate `output/predictions.csv`.
+4. **`predictions.csv` column format**: Confirm the official column format from the hackathon portal
+   if it differs from `src/forecastiq/submission/output_schema.py` — update that one file and
+   re-run `bash run.sh` to regenerate `output/predictions.csv`.
 
 ---
 
@@ -209,24 +315,6 @@ This is an offline-only operation. `run.sh` never calls `train.py`.
 
 ---
 
-## Running the FastAPI dashboard service
-
-```bash
-# 1. Start Postgres + backend (from repo root)
-docker-compose up
-
-# 2. Copy and edit environment config
-cp .env.example .env
-# Set GROQ_API_KEY= to your key for AI insights/chat
-
-# 3. Start frontend dev server (separate terminal, from repo root)
-npm run dev
-```
-
-API is available at `http://localhost:8000`. Interactive docs at `http://localhost:8000/docs`.
-
----
-
 ## Running tests
 
 ```bash
@@ -235,14 +323,12 @@ pip install -r requirements.txt
 pytest tests/ -v
 ```
 
-- **101/101 tests pass** on the dev machine (Python 3.13, Windows, with Git Bash available) and in
-  CI (Ubuntu). `run.sh` end-to-end tests (marked `@pytest.mark.slow`) actually spawn `bash run.sh`
-  as a subprocess and check the real output file — they require `bash` on PATH, standard on Linux
-  and Git Bash on Windows. Run `pytest -m "not slow"` for a faster ~30s pass during iteration.
-- No Groq API key is required to run the tests; LLM tests use an injected fake SDK client — see
-  `tests/integration/test_groq_client.py` and `tests/api/test_insights.py` /
-  `tests/api/test_chat.py`. Tests always run with `groq_api_key=None` explicitly set, regardless
-  of a real key in the developer's local `.env` (see `tests/api/conftest.py`).
+- **109 tests** collected on Python 3.13 (dev / CI). `run.sh` end-to-end tests (marked
+  `@pytest.mark.slow`) spawn `bash run.sh` as a subprocess — they require `bash` on PATH.
+  Run `pytest -m "not slow"` for a faster pass during iteration.
+- No LLM API key is required to run the tests; LLM tests use an injected fake client.
+  Tests force `groq_api_key=None` regardless of a real key in local `.env`
+  (see `tests/api/conftest.py`).
 
 ---
 
@@ -257,4 +343,4 @@ pytest tests/ -v
 | `pickle/model.pkl` exists and loads | ✅ |
 | `run.sh` contains no absolute developer paths | ✅ |
 | `run.sh` runs end-to-end and writes `predictions.csv` | ✅ (Linux/CI) |
-| `predictions.csv` column format matches official spec | ⚠️ **confirm before July 19** |
+| `predictions.csv` column format matches official spec | ⚠️ confirm against portal if announced |

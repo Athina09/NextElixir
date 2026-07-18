@@ -1,6 +1,14 @@
-﻿# ForecastIQ — NetElixir · AIgnition 3.0
+# ForecastIQ — NetElixir · AIgnition 3.0
 
 > AI-powered **probabilistic ecommerce revenue forecasting** for digital marketing agencies. Simulate media budgets, forecast ROAS with P10/P50/P90 bands, drill into campaign performance, and get Groq-grounded AI explanations — before committing ad spend.
+
+![ForecastIQ dashboard — KPIs, P10/P50/P90 revenue forecast, and budget scenario planner](docs/screenshots/01-dashboard.jpg)
+
+![Campaign analytics](docs/screenshots/02-campaign-analytics.jpg)
+
+![AI assistant](docs/screenshots/03-ai-assistant.jpg)
+
+![Forecast history](docs/screenshots/04-forecast-history.jpg)
 
 ---
 
