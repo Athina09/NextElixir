@@ -57,13 +57,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          # Keep in sync with local Node 24 / npm 11 lockfile resolution.
-          # Node 22's npm ci rejects this lockfile (missing nested @emnapi/lru-cache entries).
           node-version: "24"
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # npm ci fails on Linux runners: lockfile references optional
+        # @rolldown/binding-wasm32-wasi → @emnapi/*@1.11.2 without package entries
+        # (darwin installs omit that platform package). npm install resolves it.
+        run: npm install --no-fund --no-audit
 
       - name: Type-check
         run: npx tsc --noEmit
